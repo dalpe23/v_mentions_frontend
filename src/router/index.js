@@ -1,21 +1,45 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import LoginView from '../views/LoginView.vue'
+import AnadirAlerta from '@/views/AnadirAlerta.vue'
+import WelcomeView from '../views/WelcomeView.vue'
+import DetallesAlerta from '@/views/DetallesAlerta.vue'
+import AlertasView from '@/views/AlertasView.vue'
+import UsuarioView from '@/views/UsuarioView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
+      name: 'login',
+      component: LoginView,
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      path: '/alertas',
+      name: 'alertas',
+      component: AlertasView,
+    },
+    {
+      path: '/welcome',
+      name: 'welcome',
+      component: WelcomeView,
+    },
+    {
+      path: '/detalle-alerta/:id',
+      name: 'detalle-alerta',
+      component: DetallesAlerta,
+      props: true,
+    },
+    {
+      path: '/nueva-alerta',
+      name: 'anadir-alerta',
+      component: AnadirAlerta,
+    },
+    {
+      path: '/usuario',
+      name: 'usuario',
+      name: 'home',
+      component: UsuarioView,
     },
   ],
 })
