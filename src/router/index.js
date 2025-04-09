@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 import AnadirAlerta from '@/views/AnadirAlerta.vue'
 import WelcomeView from '../views/WelcomeView.vue'
-import DetallesAlerta from '@/views/DetallesAlerta.vue'
+import DetallesAlerta from '@/views/MencionesView.vue'
 import AlertasView from '@/views/AlertasView.vue'
 import UsuarioView from '@/views/UsuarioView.vue'
 
@@ -25,10 +25,10 @@ const router = createRouter({
       component: WelcomeView,
     },
     {
-      path: '/detalle-alerta/:id',
-      name: 'detalle-alerta',
+      path: '/menciones',
+      name: 'menciones',
       component: DetallesAlerta,
-      props: true,
+      //props: true,
     },
     {
       path: '/nueva-alerta',
