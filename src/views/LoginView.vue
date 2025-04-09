@@ -19,6 +19,10 @@ export default {
         correo: "",
         paswd: "",
       },
+      usuarioPrueba: {
+         correo: "admin@vmentions.com",
+         paswd: "1234"
+      },
       mySchema: yup.object({
         correo: yup
           .string()
@@ -34,6 +38,18 @@ export default {
 
     async handleSubmit() {
       const { correo, paswd } = this.form;
+      
+      // USUARIO DE PRUEBA BORRAR, ABAJO USER API
+      if (correo === this.usuarioPrueba.correo && paswd === this.usuarioPrueba.paswd) {
+        this.$router.push({ name: "home" });
+      } else {
+        alert("Correo o contraseña incorrectos");
+      }
+    },
+
+
+   /* async handleSubmit() {
+      const { correo, paswd } = this.form;
       const user = await this.login(correo, paswd);
       if (user) {
         //await this.populatexxxxxxx();
@@ -41,7 +57,7 @@ export default {
       } else {
         alert("Correo o contraseña incorrectos");
       }
-    },
+    },  */
   },
 };
 </script>

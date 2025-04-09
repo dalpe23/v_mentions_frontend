@@ -33,7 +33,7 @@ const route = useRoute();
 .app-container {
   display: flex;
   height: 100vh;
-  width: 100vw;  
+  width: 100vw;
 }
 
 .main-content {
@@ -41,6 +41,7 @@ const route = useRoute();
   color: black;
   padding: 2rem;
   overflow-y: auto;
+  overflow-x: auto;
 }
 
 .sidebar {
