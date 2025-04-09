@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: "MencionesView",
   data() {
     return {
       menciones: [
@@ -30,7 +31,8 @@ export default {
           descripcion: "La nueva ley de Costas valenciana busca proteger el litoral y frenar el impacto del cambio climático en las costas.",
           sentimiento: "neutral",
         },
-      ],
+      ],      // const response = await axios.get(`http://localhost/api/alertas/${alertaId}/menciones`);
+              // menciones.value = response.data;
     };
   },
   methods: {
@@ -50,7 +52,7 @@ export default {
 <template>
   <div class="app-container">
     <main class="main-content">
-      <h2>Menciones</h2>
+      <h2>Menciones para la alerta {{ alertaId }}</h2>
       <ul>
         <li v-for="mencion in menciones" :key="mencion.id" class="mencion-item">
           <a :href="mencion.enlace" target="_blank" class="mencion-link">
@@ -87,7 +89,14 @@ html, body, #app {
   flex-grow: 1;
   background-color: #fff;
   padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
 }
 
 ul {

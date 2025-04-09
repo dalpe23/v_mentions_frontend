@@ -14,15 +14,14 @@ export default {
 </template>
 
 <style scoped>
-/* Animación para la imagen */
 @keyframes slideInFromLeft {
   from {
-    transform: translateX(-100%); /* Comienza fuera de la pantalla por la izquierda */
-    opacity: 0; /* Comienza completamente transparente */
+    transform: translateX(-100%); 
+    opacity: 0; 
   }
   to {
-    transform: translateX(0); /* Termina en su posición original */
-    opacity: 1; /* Termina completamente visible */
+    transform: translateX(0);
+    opacity: 1;
   }
 }
 
@@ -30,7 +29,7 @@ export default {
   width: 100%;
   height: auto;
   margin-bottom: 1rem;
-  animation: slideInFromLeft 1.5s ease-out; /* Aplica la animación */
+  animation: slideInFromLeft 1.5s ease-out; 
 }
 h1 {
   font-size: 4rem;
