@@ -13,7 +13,6 @@ const route = useRoute();
       <RouterLink to="/alertas">Alertas</RouterLink>
       <RouterLink to="/nueva-alerta">Nueva Alerta</RouterLink>
       <RouterLink to="/usuario">Usuario</RouterLink>
-      <RouterLink to="/">Login (test)</RouterLink>
       <RouterLink to="/menciones">Ver Menciones(test)</RouterLink>
     </aside>
 
