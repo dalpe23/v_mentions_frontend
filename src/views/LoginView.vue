@@ -41,7 +41,7 @@ export default {
       
       // USUARIO DE PRUEBA BORRAR, ABAJO USER API
       if (correo === this.usuarioPrueba.correo && paswd === this.usuarioPrueba.paswd) {
-        this.$router.push({ name: "home" });
+        this.$router.push('/welcome');
       } else {
         alert("Correo o contraseña incorrectos");
       }
