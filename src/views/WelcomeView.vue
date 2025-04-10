@@ -25,8 +25,23 @@ export default {
   }
 }
 
+.app-container {
+  display: flex;
+  width: 85vw;
+  height: 100vh;
+  overflow-x: hidden;
+}
+
+.main-content {
+  flex-grow: 1;
+  background-color: #fff;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
 .playa-image {
-  width: 100%;
+  width: 60%;
   height: auto;
   margin-bottom: 1rem;
   animation: slideInFromLeft 1.5s ease-out; 
@@ -34,7 +49,7 @@ export default {
 h1 {
   font-size: 4rem;
   color: #333;
-  text-align: center;
+  text-align: left;
   margin-top: 1rem;
   }
 </style>

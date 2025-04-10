@@ -1,7 +1,26 @@
-<script setup>
-import { RouterLink, RouterView, useRoute } from 'vue-router';
+<script>
+import { RouterLink, RouterView } from 'vue-router';
+import { mapActions } from 'pinia';
+import { useDataStore } from '@/stores/store';
 
-const route = useRoute();
+export default {
+  name: 'App',
+
+  computed: {
+    route() {
+      return this.$route;
+    }
+  },
+
+  methods: {
+    ...mapActions(useDataStore, ['fetchMenciones', 'fetchAlertas']),
+  },
+
+  async mounted() {
+    await this.fetchMenciones();
+    await this.fetchAlertas();
+  }
+};
 </script>
 
 <template>
@@ -25,7 +44,6 @@ const route = useRoute();
 * {
   font-family: 'Poppins', sans-serif;
   font-weight: 400;
-
 }
 
 .app-container {
@@ -67,8 +85,6 @@ const route = useRoute();
 .sidebar a.router-link-active {
   font-weight: bold;
 }
-
-
 
 .no-sidebar {
   display: block;
