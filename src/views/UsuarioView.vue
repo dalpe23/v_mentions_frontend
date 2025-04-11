@@ -7,20 +7,30 @@ export default {
   data() {
     return {
       usuario: {
-        nombre: 'vmentionsAdmin',
-        email: 'adminVmentions@gmail.com',
-        ciudad: 'Alcoi',
-        pais: 'España',
-        fechaRegistro: '2023-10-01',
-        fechaUltimoAcceso: '2023-10-15',
+        nombre: '',
+        email: '',
+        ciudad: '',
+        pais: '',
+        fechaRegistro: '',
+        fechaUltimoAcceso: '',
       },
-    }
+    };
   },
   computed: {
     ...mapState(useDataStore, ['usuario']),
   },
   methods: {
     ...mapActions(useDataStore, ['logout']),
+  },
+  mounted() {
+    const usuarioData = JSON.parse(localStorage.getItem('usuario'));
+    if (usuarioData) {
+      this.usuario = {
+        nombre: usuarioData.name,
+        email: usuarioData.email,
+        rol: usuarioData.rol,
+      };
+    }
   },
 }
 </script>
@@ -31,6 +41,7 @@ export default {
       <h2>Mis datos</h2>
       <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
       <p><strong>Email:</strong> {{ usuario.email }}</p>
+      <p><strong>Rol:</strong> {{ usuario.rol }}</p>
       <p></p>
     </div>
     <div class="usuario-actions">

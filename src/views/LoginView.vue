@@ -16,15 +16,15 @@ export default {
   data() {
     return {
       form: {
-        correo: "",
+        email: "",
         paswd: "",
       },
       usuarioPrueba: {
-         correo: "admin@vmentions.com",
+         email: "admin@vmentions.com",
          paswd: "1234"
       },
       mySchema: yup.object({
-        correo: yup
+        email: yup
           .string()
           .email("Introduce un correo válido")
           .required("El correo es obligatorio"),
@@ -36,28 +36,28 @@ export default {
   methods: {
     ...mapActions(useDataStore, ["login", "populatexxxxx"]),
 
-    async handleSubmit() {
-      const { correo, paswd } = this.form;
+    /*async handleSubmit() {
+      const { email, paswd } = this.form;
       
       // USUARIO DE PRUEBA BORRAR, ABAJO USER API
-      if (correo === this.usuarioPrueba.correo && paswd === this.usuarioPrueba.paswd) {
+      if (email === this.usuarioPrueba.email && paswd === this.usuarioPrueba.paswd) {
         this.$router.push('/welcome');
       } else {
         alert("Correo o contraseña incorrectos");
       }
-    },
+    },*/
 
 
-   /* async handleSubmit() {
-      const { correo, paswd } = this.form;
-      const user = await this.login(correo, paswd);
+    async handleSubmit() {
+      const { email, paswd } = this.form;
+      const user = await this.login(email, paswd);
       if (user) {
         //await this.populatexxxxxxx();
         this.$router.push({ name: "home" });
       } else {
-        alert("Correo o contraseña incorrectos");
+        alert("email o contraseña incorrectos");
       }
-    },  */
+    },  
   },
 };
 </script>
@@ -68,9 +68,9 @@ export default {
       <img src="/VMentionsBlack.png" alt="" srcset="" class="logo" />
       <Form id="loginForm" :validation-schema="mySchema" @submit="handleSubmit">
         <div class="form-group">
-          <label for="correo" class="form-label">Correo electrónico</label>
-          <Field v-model="form.correo" name="correo" type="email" class="form-input" />
-          <ErrorMessage name="correo" class="form-error" />
+          <label for="email" class="form-label">Correo electrónico</label>
+          <Field v-model="form.email" name="email" type="email" class="form-input" />
+          <ErrorMessage name="email" class="form-error" />
         </div>
 
         <div class="form-group">

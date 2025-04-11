@@ -42,5 +42,24 @@ const router = createRouter({
     },
   ],
 })
+// Si hay usuario en localStorage y la ruta es login, redirigir a welcome
+router.beforeEach((to, from, next) => {
+  const usuarioData = localStorage.getItem('usuario');
+  if (usuarioData && to.name === 'login') {
+    next({ name: 'welcome' });
+  } else {
+    next();
+  }
+});
+
+// Si no hay usuario en localStorage y la ruta es diferente de login, redirigir a login
+router.beforeEach((to, from, next) => {
+  const usuarioData = localStorage.getItem('usuario');
+  if (!usuarioData && to.name !== 'login') {
+    next({ name: 'login' });
+  } else {
+    next();
+  }
+});
 
 export default router
