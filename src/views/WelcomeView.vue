@@ -1,13 +1,17 @@
 <script>
+import { useDataStore } from '@/stores/store';
+import { mapActions, mapState } from 'pinia';
 export default {
   name: "WelcomeView",
-  data() {
-    return {
-      totalAlertas: 2,
-      totalMenciones: 32,
-      mencionesPositivas: 28,
-      mencionesNegativas: 4,
-    };
+  methods: {
+    ...mapActions(useDataStore, ["fetchAlertas", "fetchMenciones"]),
+  },
+  computed: {
+    ...mapState(useDataStore, ["totalAlertas", "totalMenciones", "mencionesPositivas", "mencionesNegativas"]),
+  },
+  mounted() {
+    //this.fetchAlertas();
+    //this.fetchMenciones();
   },
 };
 </script>

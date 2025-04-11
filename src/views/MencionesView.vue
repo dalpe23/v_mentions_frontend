@@ -22,8 +22,8 @@ export default {
     },
   },
 
-  mounted() {
-    this.fetchMenciones();
+  async mounted() {
+  // await this.fetchMenciones();
   },
 };
 </script>

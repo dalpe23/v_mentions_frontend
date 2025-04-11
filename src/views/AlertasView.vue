@@ -12,8 +12,8 @@ export default {
     ...mapActions(useDataStore, ["fetchAlertas"]),
   },
 
-  mounted() {
-    this.fetchAlertas();
+  async mounted() {
+   // await this.fetchAlertas();
   },
 };
 </script>

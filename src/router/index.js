@@ -5,6 +5,7 @@ import WelcomeView from '../views/WelcomeView.vue'
 import MencionesView from '@/views/MencionesView.vue'
 import AlertasView from '@/views/AlertasView.vue'
 import UsuarioView from '@/views/UsuarioView.vue'
+import AnadirCliente from '@/views/AnadirCliente.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,6 +47,11 @@ const router = createRouter({
       name: 'home',
       component: UsuarioView,
     },
+    {
+      path: '/anadir-cliente',
+      name: 'anadir-cliente',
+      component: AnadirCliente,
+    }
   ],
 })
 // Si hay usuario en localStorage y la ruta es login, redirigir a welcome

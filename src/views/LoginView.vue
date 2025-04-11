@@ -19,10 +19,6 @@ export default {
         email: "",
         paswd: "",
       },
-      usuarioPrueba: {
-         email: "admin@vmentions.com",
-         paswd: "1234"
-      },
       mySchema: yup.object({
         email: yup
           .string()
@@ -40,6 +36,8 @@ export default {
       const { email, paswd } = this.form;
       const user = await this.login(email, paswd);
       if (user) {
+        await this.fetchAlertas();
+        await this.fetchMenciones();
         this.$router.push({ name: "welcome" });
       } else {
         alert("email o contraseña incorrectos");

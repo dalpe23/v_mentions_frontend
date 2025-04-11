@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import axios from "axios";
+import AnadirCliente from '@/views/AnadirCliente.vue';
 
  const SERVER = "http://localhost/api";
 // const SERVER = "https://v-mentions.myp.com.es/Laravel/public/api";
@@ -14,7 +15,19 @@ export const useDataStore = defineStore("data", {
   },
 
   getters: {
-    
+    totalMenciones(state) {
+      return state.menciones.length;
+    },
+    totalAlertas(state) {
+      return state.alertas.length;
+    },
+    mencionesPositivas(state) {
+      return state.menciones.filter(m => m.sentimiento === "positivo").length;
+    }
+    ,
+    mencionesNegativas(state) {
+      return state.menciones.filter(m => m.sentimiento === "negativo").length;
+    },
   },
 
   actions: {
@@ -75,6 +88,29 @@ export const useDataStore = defineStore("data", {
         console.error("Error al cargar las alertas:", error);
       }
     },
+
+    async AnadirCliente(nombre, correo) {
+      try {
+        const headers = this.getAuthHeaders();
+        if (!headers) return;
+
+        const response = await axios.post(`${SERVER}/clientes`, {
+          name: nombre,
+          email: correo,
+        }, headers);
+        console.log(response);
+
+        if (response.status === 200) {
+          alert("Cliente añadido correctamente");
+          this.fetchMenciones();
+        } else {
+          alert("Error al añadir el cliente");
+        }
+      } catch (error) {
+        alert("Error al añadir el cliente");
+        console.error("Error al añadir el cliente:", error);
+      }
+    }
 
   },
 })
