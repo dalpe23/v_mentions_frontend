@@ -55,10 +55,24 @@ export const useDataStore = defineStore("data", {
 
         const response = await axios.get(`${SERVER}/mis-menciones`, headers);
 
-       return response.data;
+        this.menciones = response.data;
       } catch (error) {
         alert("Error al cargar las menciones");
         console.error("Error al cargar las menciones:", error);
+      }
+    },
+
+    async fetchAlertas() {
+      try {
+        const headers = this.getAuthHeaders();
+        if (!headers) return;
+
+        const response = await axios.get(`${SERVER}/mis-alertas`, headers);
+
+        this.alertas = response.data;
+      } catch (error) {
+        alert("Error al cargar las alertas");
+        console.error("Error al cargar las alertas:", error);
       }
     },
 

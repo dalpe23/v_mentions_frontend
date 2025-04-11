@@ -1,29 +1,19 @@
 <script>
+import { useDataStore } from '@/stores/store';
+import { mapActions, mapState } from 'pinia';
 export default {
   name: "AlertasView",
-  data() {
-    return {
-      alertas: [
-        {
-          id: 1,
-          nombre: "Playas Valencia",
-          nivel: "bajo",
-          resuelta: false,
-        },
-        {
-          id: 2,
-          nombre: "Turismo Valencia",
-          nivel: "medio",
-          resuelta: false,
-        },
-      ],
-    };
+
+  computed: {
+    ...mapState(useDataStore, ["alertas"]),
   },
+
   methods: {
-    editar(id) {
-      console.log("Editar alerta", id);
-      this.$router.push({ name: "editarAlerta", params: { id }});
-    },
+    ...mapActions(useDataStore, ["fetchAlertas"]),
+  },
+
+  mounted() {
+    this.fetchAlertas();
   },
 };
 </script>
@@ -40,7 +30,7 @@ export default {
           </div>
           <div class="alerta-buttons">
             <button class="btn-remove" @click="eliminar(alerta.id)">Borrar</button>
-            <button class="btn-view" @click="$router.push({ path: '/menciones', query: { alertaId: alerta.id } })">Ver Menciones</button>
+            <button class="btn-view" @click="$router.push(`/alertas/${alerta.id}/menciones`)">Ver Menciones</button>
           </div>
         </li>
       </ul>

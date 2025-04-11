@@ -4,13 +4,8 @@ import { mapActions, mapState } from 'pinia';
 
 export default {
   name: "MencionesView",
-  data() {
-    return {
-      menciones: [],
-    };
-  },
-  async mounted() {
-    this.menciones = await this.fetchMenciones();
+  computed: {
+    ...mapState(useDataStore, ["menciones"]),
   },
 
   methods: {
@@ -25,6 +20,10 @@ export default {
       const minutos = date.getMinutes().toString().padStart(2, "0");
       return `${dia}/${mes}/${anio} ${hora}:${minutos}`;
     },
+  },
+
+  mounted() {
+    this.fetchMenciones();
   },
 };
 </script>

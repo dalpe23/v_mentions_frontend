@@ -20,6 +20,12 @@ const router = createRouter({
       component: AlertasView,
     },
     {
+      path: '/alertas/:id/menciones',
+      name: 'menciones-alerta',
+      component: MencionesView,
+      props: true,
+    },
+    {
       path: '/welcome',
       name: 'welcome',
       component: WelcomeView,

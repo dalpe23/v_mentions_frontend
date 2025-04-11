@@ -13,9 +13,12 @@ export default {
   },
 
   methods: {
+    ...mapActions(useDataStore, ["fetchAlertas", "fetchMenciones"]),
   },
 
   async mounted() {
+    //await this.fetchAlertas();
+    //await this.fetchMenciones();
   }
 };
 </script>

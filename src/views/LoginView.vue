@@ -34,26 +34,13 @@ export default {
   },
 
   methods: {
-    ...mapActions(useDataStore, ["login", "populatexxxxx"]),
-
-    /*async handleSubmit() {
-      const { email, paswd } = this.form;
-      
-      // USUARIO DE PRUEBA BORRAR, ABAJO USER API
-      if (email === this.usuarioPrueba.email && paswd === this.usuarioPrueba.paswd) {
-        this.$router.push('/welcome');
-      } else {
-        alert("Correo o contraseña incorrectos");
-      }
-    },*/
-
+    ...mapActions(useDataStore, ["login", "fetchAlertas", "fetchMenciones"]),
 
     async handleSubmit() {
       const { email, paswd } = this.form;
       const user = await this.login(email, paswd);
       if (user) {
-        //await this.populatexxxxxxx();
-        this.$router.push({ name: "home" });
+        this.$router.push({ name: "welcome" });
       } else {
         alert("email o contraseña incorrectos");
       }
