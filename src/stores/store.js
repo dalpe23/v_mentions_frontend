@@ -18,6 +18,14 @@ export const useDataStore = defineStore("data", {
   },
 
   actions: {
+    getAuthHeaders() {
+      let token = localStorage.getItem("token")?.replace(/^"|"$/g, "");
+      if (!token) {
+        return null;
+      }
+      return { headers: { Authorization: `Bearer ${token}` } };
+    },
+
     async login(email, contrasena) {
       try {
         const response = await axios.post(`${SERVER}/login`, {
@@ -42,29 +50,17 @@ export const useDataStore = defineStore("data", {
 
     async fetchMenciones() {
       try {
-        const response = await axios.get(`${SERVER}/menciones`);
-       this.menciones = response.data;
-      } catch (error) {
-        console.error("Error fetching menciones:", error);
-      }
-    },
-    async cargarAlertas() {
-      this.loading = true;
-      this.error = null;
-      try {
-        // Si utilizas autenticación via token, asegúrate de incluir la cabecera Authorization.
-        // Por ejemplo, si el token está en localStorage:
-        // const token = localStorage.getItem('token');
-        // const config = { headers: { Authorization: `Bearer ${token}` } };
+        const headers = this.getAuthHeaders();
+        if (!headers) return;
 
-        // En este ejemplo, se hace la petición a la ruta protegida que devuelve solo las alertas del usuario
-        const response = await axios.get('http://localhost/api/mis-alertas' /*, config*/);
-        this.alertas = response.data;
+        const response = await axios.get(`${SERVER}/mis-menciones`, headers);
+
+       return response.data;
       } catch (error) {
-        this.error = error;
-      } finally {
-        this.loading = false;
+        alert("Error al cargar las menciones");
+        console.error("Error al cargar las menciones:", error);
       }
     },
+
   },
 })

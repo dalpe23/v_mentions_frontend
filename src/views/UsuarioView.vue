@@ -9,10 +9,7 @@ export default {
       usuario: {
         nombre: '',
         email: '',
-        ciudad: '',
-        pais: '',
-        fechaRegistro: '',
-        fechaUltimoAcceso: '',
+        rol: '',
       },
     };
   },
@@ -20,8 +17,13 @@ export default {
     ...mapState(useDataStore, ['usuario']),
   },
   methods: {
-    ...mapActions(useDataStore, ['logout']),
+    logout() {
+      localStorage.removeItem("usuario");
+      localStorage.removeItem("token");
+      this.$router.push({ name: 'login' });
+    },
   },
+  
   mounted() {
     const usuarioData = JSON.parse(localStorage.getItem('usuario'));
     if (usuarioData) {

@@ -1,41 +1,21 @@
 <script>
+import { useDataStore } from '@/stores/store';
+import { mapActions, mapState } from 'pinia';
+
 export default {
   name: "MencionesView",
   data() {
     return {
-      menciones: [
-        {
-          id: 1,
-          titulo: "Los nuevos deslindes del Gobierno afectan 61 km de costa en la Comunidad Valenciana",
-          fuente: "Google Alerts",
-          enlace: "https://www.google.com/url?rct=j&sa=t&url=https://noticiasciudadanas.com/los-nuevos-deslindes-del-gobierno-afectan-61-km-de-costa-en-la-comunidad-valenciana-el-consell-prepara-su-respuesta-legal/&ct=ga&cd=CAIyGThhNWE4NWU3NDY0MjFlZTc6ZXM6ZXM6RVM&usg=AOvVaw0DTzwDa1qZZGEdDf-2yN4I",
-          fecha: "2025-04-07 05:53:55",
-          descripcion: "La futura ley de Costas valenciana busca frenar el impacto en propiedades y proteger el patrimonio litoral. En un contexto de creciente tensión ...",
-          sentimiento: "positivo",
-        },
-        {
-          id: 2,
-          titulo: "El Gobierno aprueba un nuevo deslinde de costas en la Comunidad Valenciana",
-          fuente: "Google Alerts",
-          enlace: "https://www.google.com/url?rct=j&sa=t&url=https://www.abc.es/espana/comunidad-valenciana/abci-gobierno-aprueba-nuevo-deslinde-costas-comunidad-valenciana-202304070553_noticia.html&ct=ga&cd=CAIyGThhNWE4NWU3NDY0MjFlZTc6ZXM6ZXM6RVM&usg=AOvVaw0DTzwDa1qZZGEdDf-2yN4I",
-          fecha: "2025-04-07 05:53:55",
-          descripcion: "El Gobierno ha aprobado un nuevo deslinde de costas en la Comunidad Valenciana que afecta a más de 61 kilómetros de litoral.",
-          sentimiento: "negativo",
-        },
-        {
-          id: 3,
-          titulo: "La nueva ley de Costas valenciana busca proteger el litoral",
-          fuente: "Google Alerts",
-          enlace: "https://www.google.com/url?rct=j&sa=t&url=https://www.elperiodico.com/es/sociedad/20230407/nueva-ley-costas-valenciana-busca-proteger-litoral-202304070553_noticia.html&ct=ga&cd=CAIyGThhNWE4NWU3NDY0MjFlZTc6ZXM6ZXM6RVM&usg=AOvVaw0DTzwDa1qZZGEdDf-2yN4I",
-          fecha: "2025-04-07 05:53:55",
-          descripcion: "La nueva ley de Costas valenciana busca proteger el litoral y frenar el impacto del cambio climático en las costas.",
-          sentimiento: "neutral",
-        },
-      ],      // const response = await axios.get(`http://localhost/api/alertas/${alertaId}/menciones`);
-              // menciones.value = response.data;
+      menciones: [],
     };
   },
+  async mounted() {
+    this.menciones = await this.fetchMenciones();
+  },
+
   methods: {
+    ...mapActions(useDataStore, ["fetchMenciones"]),
+
     formatFecha(fecha) {
       const date = new Date(fecha);
       const dia = date.getDate().toString().padStart(2, "0");
@@ -52,7 +32,7 @@ export default {
 <template>
   <div class="app-container">
     <main class="main-content">
-      <h2>Menciones para la alerta {{ alertaId }}</h2>
+      <h2>Mis menciones</h2>
       <ul>
         <li v-for="mencion in menciones" :key="mencion.id" class="mencion-item">
           <a :href="mencion.enlace" target="_blank" class="mencion-link">

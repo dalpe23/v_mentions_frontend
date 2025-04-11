@@ -13,12 +13,9 @@ export default {
   },
 
   methods: {
-    ...mapActions(useDataStore, ['fetchMenciones', 'fetchAlertas']),
   },
 
   async mounted() {
-    await this.fetchMenciones();
-    await this.fetchAlertas();
   }
 };
 </script>
@@ -30,6 +27,7 @@ export default {
         <img src="/VMentions.png" alt="logo" class="logo" />
       </RouterLink>
       <RouterLink to="/alertas">Alertas</RouterLink>
+      <RouterLink to="/menciones">Menciones</RouterLink>
       <RouterLink to="/nueva-alerta">Nueva Alerta</RouterLink>
       <RouterLink to="/usuario">Usuario</RouterLink>
     </aside>
