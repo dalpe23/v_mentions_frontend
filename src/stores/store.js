@@ -10,6 +10,7 @@ export const useDataStore = defineStore("data", {
     return {
       menciones: [],
       alertas: [],
+      messages: [],
     };
   },
 
@@ -76,7 +77,7 @@ export const useDataStore = defineStore("data", {
 
         this.menciones = response.data;
       } catch (error) {
-        alert("Error al cargar las menciones");
+        this.anadirMensaje("Error al cargar las menciones");
         console.error("Error al cargar las menciones:", error);
       }
     },
@@ -93,7 +94,7 @@ export const useDataStore = defineStore("data", {
           mencion.leida = true;
         }
       } catch (error) {
-        alert("Error al marcar la mención como leída");
+        this.anadirMensaje("Error al marcar la mención como leída");
         console.error("Error al marcar la mención como leída:", error);
       }
     },
@@ -105,13 +106,13 @@ export const useDataStore = defineStore("data", {
 
         await axios.patch(`${SERVER}/menciones/${id}/ponerComoNoLeida`, {}, headers);
         await this.fetchMenciones();
-        alert("Mención marcada como no leída");
+        this.anadirMensaje("Mención marcada como no leída");
         const mencion = this.menciones.find(m => m.id === id);
         if (mencion) {
           mencion.leida = false;
         }
       } catch (error) {
-        alert("Error al marcar la mención como no leída");
+        this.anadirMensaje("Error al marcar la mención como no leída");
         console.error("Error al marcar la mención como no leída:", error);
       }
     },
@@ -125,7 +126,7 @@ export const useDataStore = defineStore("data", {
 
         this.alertas = response.data;
       } catch (error) {
-        alert("Error al cargar las alertas");
+        this.anadirMensaje("Error al cargar las alertas");
         console.error("Error al cargar las alertas:", error);
       }
     },
@@ -140,7 +141,7 @@ export const useDataStore = defineStore("data", {
         console.log(response);
 
       } catch (error) {
-        alert("Error al eliminar la alerta");
+        this.anadirMensaje("Error al eliminar la alerta");
         console.error("Error al eliminar la alerta:", error);
       }
     },
@@ -152,13 +153,12 @@ export const useDataStore = defineStore("data", {
 
         await axios.patch(`${SERVER}/alertas/${id}`, { resuelta: true }, headers);
 
-        // Actualizar el estado local
         const alerta = this.alertas.find(a => a.id === id);
         if (alerta) {
           alerta.resuelta = true;
         }
       } catch (error) {
-        alert("Error al marcar la alerta como resuelta");
+        this.anadirMensaje("Error al marcar la alerta como resuelta");
         console.error("Error al marcar la alerta como resuelta:", error);
       }
     },
@@ -171,7 +171,7 @@ export const useDataStore = defineStore("data", {
         const response = await axios.get(`${SERVER}/clientes`, headers);
         return response.data;
       } catch (error) {
-        alert("Error al cargar los clientes");
+        this.anadirMensaje("Error al cargar los clientes");
         console.error("Error al cargar los clientes:", error);
       }
     },
@@ -182,11 +182,11 @@ export const useDataStore = defineStore("data", {
         if (!headers) return;
 
         const response = await axios.delete(`${SERVER}/clientes/${id}`, headers);
-        alert("Cliente eliminado correctamente");
+        this.anadirMensaje("Cliente eliminado correctamente");
         console.log(response);
 
       } catch (error) {
-        alert("Error al eliminar el cliente");
+        this.anadirMensaje("Error al eliminar el cliente");
         console.error("Error al eliminar el cliente:", error);
       }
     },
@@ -203,14 +203,34 @@ export const useDataStore = defineStore("data", {
         console.log(response);
 
         if (response.status === 200) {
-          alert("Cliente añadido correctamente");
+          this.anadirMensaje("Cliente añadido correctamente");
           this.fetchMenciones();
         } 
       } catch (error) {
-        alert("Error al añadir el cliente");
+        this.anadirMensaje("Error al añadir el cliente");
         console.error("Error al añadir el cliente:", error);
       }
-    }
+    },
 
+    async anadirMensaje(mensaje) {
+      try {
+        this.messages.push(mensaje);
+        setTimeout(() => {
+          this.borrarMensaje(this.messages.length - 1);
+        }
+        , 4000);
+      } catch (error) {
+        console.error("Error al añadir mensaje:", error);
+      }
+    },
+    async borrarMensaje(indice) {
+      try {
+        this.messages.splice(indice, 1);
+      } catch (error) {
+        this.anadirMensaje(error.message);
+      }
+    },
+
+    
   },
 })

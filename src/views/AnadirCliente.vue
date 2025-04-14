@@ -3,7 +3,7 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import { mapActions, mapState } from 'pinia';
 import { useDataStore } from '@/stores/store';
-
+import AppMessages from "@/components/AppMessages.vue";
 
 export default {
   name: "AnadirCliente",
@@ -12,6 +12,7 @@ export default {
     Form,
     Field,
     ErrorMessage,
+    AppMessages,
   },
 
   data() {
@@ -44,15 +45,8 @@ export default {
   methods: {
     async handleSubmit(values) {
       const { name, email } = values;
-
-      try {
         await this.AnadirCliente(name, email);
-        alert("Cliente añadido con éxito");
-        //this.$router.push({ name: "clientes" });
-      } catch (error) {
-        console.error("Error al añadir el cliente:", error);
-        alert("Error al añadir el cliente");
-      }
+        this.$router.push("/clientes");
     },
   },
 };

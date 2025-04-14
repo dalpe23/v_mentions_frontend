@@ -12,11 +12,11 @@ export default {
     ...mapActions(useDataStore, ["fetchAlertas", "marcarAlertaComoResuelta", "deleteAlerta"]),
     async eliminar(id) {
       await this.deleteAlerta(id);
-      alert('Alerta "'+ this.getAlertaNombreById(id) + '" eliminada');
-    },
+      this.anadirMensaje("Cliente añadido correctamente");
+      },
     async marcarResuelta(id) {
       await this.marcarAlertaComoResuelta(id);
-      alert('Alerta "'+ this.getAlertaNombreById(id) + '" marcada como resuelta');
+      this.anadirMensaje('Alerta "'+ this.getAlertaNombreById(id) + '" marcada como resuelta', success);
     },
   },
 

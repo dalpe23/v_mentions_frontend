@@ -35,7 +35,7 @@ export default {
     async handleSubmit(values) {
       console.log("Valores recibidos:", values);
       alert("Alerta enviada");
-      this.$router.push({ name: "home" });
+      this.$router.push('/alertas');
     },
   },
 };
@@ -56,6 +56,7 @@ export default {
         <Field as="select" name="idioma" v-model="form.idioma" class="form-input">
           <option value="" disabled>Selecciona un idioma</option>
           <option value="es">Español</option>
+          <option value="vc">Valencià</option>
           <option value="en">Inglés</option>
           <option value="fr">Francés</option>
           <option value="de">Alemán</option>

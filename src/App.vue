@@ -2,9 +2,16 @@
 import { RouterLink, RouterView } from 'vue-router';
 import { mapActions } from 'pinia';
 import { useDataStore } from '@/stores/store';
+import AppMessages from './components/AppMessages.vue';
 
 export default {
   name: 'App',
+
+  components: {
+    AppMessages,
+    RouterLink,
+    RouterView
+  },
 
   computed: {
     route() {
@@ -25,6 +32,8 @@ export default {
 
 <template>
   <div class="app-container" :class="{ 'no-sidebar': route.path === '/' }">
+ 
+
     <aside v-if="route.path !== '/'" class="sidebar">
       <RouterLink to="/welcome">
         <img src="/VMentions.png" alt="logo" class="logo" />
@@ -35,7 +44,8 @@ export default {
       <RouterLink to="/usuario">Usuario</RouterLink>
     </aside>
 
-    <main class="main-content">
+    <main class="main-content">  
+       <app-messages />
       <RouterView />
     </main>
   </div>
