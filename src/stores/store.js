@@ -27,6 +27,13 @@ export const useDataStore = defineStore("data", {
     mencionesNegativas(state) {
       return state.menciones.filter(m => m.sentimiento === "negativo").length;
     },
+    getAlertaNombreById(state) {
+      return (id) => {
+        const alerta = state.alertas.find(a => a.id === id);
+        return alerta ? alerta.nombre : null;
+      };
+    }
+    ,
   },
 
   actions: {
@@ -85,6 +92,39 @@ export const useDataStore = defineStore("data", {
       } catch (error) {
         alert("Error al cargar las alertas");
         console.error("Error al cargar las alertas:", error);
+      }
+    },
+
+    async deleteAlerta(id) {
+      try {
+        const headers = this.getAuthHeaders();
+        if (!headers) return;
+
+        const response = await axios.delete(`${SERVER}/alertas/${id}`, headers);
+        alert("Alerta eliminada correctamente");
+        console.log(response);
+
+      } catch (error) {
+        alert("Error al eliminar la alerta");
+        console.error("Error al eliminar la alerta:", error);
+      }
+    },
+
+    async marcarAlertaComoResuelta(id) {
+      try {
+        const headers = this.getAuthHeaders();
+        if (!headers) return;
+
+        await axios.patch(`${SERVER}/alertas/${id}`, { resuelta: true }, headers);
+
+        // Actualizar el estado local
+        const alerta = this.alertas.find(a => a.id === id);
+        if (alerta) {
+          alerta.resuelta = true;
+        }
+      } catch (error) {
+        alert("Error al marcar la alerta como resuelta");
+        console.error("Error al marcar la alerta como resuelta:", error);
       }
     },
 

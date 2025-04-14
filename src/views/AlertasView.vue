@@ -5,11 +5,19 @@ export default {
   name: "AlertasView",
 
   computed: {
-    ...mapState(useDataStore, ["alertas"]),
+    ...mapState(useDataStore, ["alertas", "getAlertaNombreById"]),
   },
 
   methods: {
-    ...mapActions(useDataStore, ["fetchAlertas"]),
+    ...mapActions(useDataStore, ["fetchAlertas", "marcarAlertaComoResuelta", "deleteAlerta"]),
+    async eliminar(id) {
+      await this.deleteAlerta(id);
+      alert('Alerta "'+ this.getAlertaNombreById(id) + '" eliminada');
+    },
+    async marcarResuelta(id) {
+      await this.marcarAlertaComoResuelta(id);
+      alert('Alerta "'+ this.getAlertaNombreById(id) + '" marcada como resuelta');
+    },
   },
 
   async mounted() {
@@ -26,11 +34,12 @@ export default {
         <li v-for="alerta in alertas" :key="alerta.id" class="alerta-item">
           <div class="alerta-info">
             <h3>{{ alerta.nombre }}</h3>
-            <p><strong>Resuelta:</strong> {{ alerta.resuelta ? 'Sí' : 'No' }}</p>
+            <p class="letrasAlerta"><strong>Resuelta:</strong> {{ alerta.resuelta ? 'Sí' : 'No' }}</p>
           </div>
           <div class="alerta-buttons">
-            <button class="btn-remove" @click="eliminar(alerta.id)">Borrar</button>
-            <button class="btn-view" @click="$router.push(`/alertas/${alerta.id}/menciones`)">Ver Menciones</button>
+            <button :disabled="alerta.resuelta" class="btn-view" @click="marcarResuelta(alerta.id)">Marcar como resuelta</button>
+            <button class="btn-remove" @click="eliminar(alerta.id)">Borrar Alerta</button>
+          <!-- <button class="btn-view" @click="$router.push(`/alertas/${alerta.id}/menciones`)">Ver Menciones</button> -->
           </div>
         </li>
       </ul>
@@ -132,5 +141,11 @@ button {
 
 .btn-view:hover {
   background-color: #0056b3;
+}
+
+button:disabled {
+  background-color: #cccccc; /* Color más tenue */
+  cursor: not-allowed; /* Cursor indicando que no es clicable */
+  opacity: 0.6; /* Hacerlo más translúcido */
 }
 </style>
