@@ -9,8 +9,7 @@ export default {
   computed: {
     ...mapState(useDataStore, ["totalAlertas", "totalMenciones", "mencionesPositivas", "mencionesNegativas"]),
   },
-  mounted() {
-    //this.fetchAlertas();
+  async mounted() {
     //this.fetchMenciones();
   },
 };

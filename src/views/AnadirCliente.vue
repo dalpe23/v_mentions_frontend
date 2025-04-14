@@ -34,12 +34,27 @@ export default {
     };
   },
 
+  setup() {
+    const store = useDataStore();
+    return {
+      ...mapActions(useDataStore, ["AnadirCliente"]),
+    };
+  },
+
   methods: {
     async handleSubmit(values) {
- 
-  },
-}
+      const { name, email } = values;
 
+      try {
+        await this.AnadirCliente(name, email);
+        alert("Cliente añadido con éxito");
+        //this.$router.push({ name: "clientes" });
+      } catch (error) {
+        console.error("Error al añadir el cliente:", error);
+        alert("Error al añadir el cliente");
+      }
+    },
+  },
 };
 </script>
 

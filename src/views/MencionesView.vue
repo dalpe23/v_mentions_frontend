@@ -23,7 +23,7 @@ export default {
   },
 
   async mounted() {
-  // await this.fetchMenciones();
+    // await this.fetchMenciones();
   },
 };
 </script>

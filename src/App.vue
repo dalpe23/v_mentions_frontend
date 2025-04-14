@@ -17,8 +17,8 @@ export default {
   },
 
   async mounted() {
-    //await this.fetchAlertas();
-    //await this.fetchMenciones();
+    await this.fetchAlertas();
+    await this.fetchMenciones();
   }
 };
 </script>

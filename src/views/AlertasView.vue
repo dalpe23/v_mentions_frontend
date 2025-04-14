@@ -13,7 +13,7 @@ export default {
   },
 
   async mounted() {
-   // await this.fetchAlertas();
+    //await this.fetchAlertas();
   },
 };
 </script>

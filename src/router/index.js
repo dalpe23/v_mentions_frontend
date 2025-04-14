@@ -6,6 +6,7 @@ import MencionesView from '@/views/MencionesView.vue'
 import AlertasView from '@/views/AlertasView.vue'
 import UsuarioView from '@/views/UsuarioView.vue'
 import AnadirCliente from '@/views/AnadirCliente.vue'
+import ClientesView from '@/views/ClientesView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,6 +52,11 @@ const router = createRouter({
       path: '/anadir-cliente',
       name: 'anadir-cliente',
       component: AnadirCliente,
+    },
+    {
+      path: '/clientes',
+      name: 'clientes',
+      component: ClientesView,
     }
   ],
 })

@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import axios from "axios";
-import AnadirCliente from '@/views/AnadirCliente.vue';
 
  const SERVER = "http://localhost/api";
 // const SERVER = "https://v-mentions.myp.com.es/Laravel/public/api";
@@ -89,6 +88,34 @@ export const useDataStore = defineStore("data", {
       }
     },
 
+    async fetchClientes(){
+      try {
+        const headers = this.getAuthHeaders();
+        if (!headers) return;
+
+        const response = await axios.get(`${SERVER}/clientes`, headers);
+        return response.data;
+      } catch (error) {
+        alert("Error al cargar los clientes");
+        console.error("Error al cargar los clientes:", error);
+      }
+    },
+
+    async deleteCliente(id) {
+      try {
+        const headers = this.getAuthHeaders();
+        if (!headers) return;
+
+        const response = await axios.delete(`${SERVER}/clientes/${id}`, headers);
+        alert("Cliente eliminado correctamente");
+        console.log(response);
+
+      } catch (error) {
+        alert("Error al eliminar el cliente");
+        console.error("Error al eliminar el cliente:", error);
+      }
+    },
+
     async AnadirCliente(nombre, correo) {
       try {
         const headers = this.getAuthHeaders();
@@ -103,9 +130,7 @@ export const useDataStore = defineStore("data", {
         if (response.status === 200) {
           alert("Cliente añadido correctamente");
           this.fetchMenciones();
-        } else {
-          alert("Error al añadir el cliente");
-        }
+        } 
       } catch (error) {
         alert("Error al añadir el cliente");
         console.error("Error al añadir el cliente:", error);
