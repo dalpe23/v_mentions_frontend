@@ -91,11 +91,18 @@ export default {
   padding: 0.5rem 0;
   text-decoration: none;
   color: white;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.sidebar a:hover {
+  transform: scale(1.05);
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
 }
 
 .sidebar a.router-link-active {
   font-weight: bold;
-}
+  }
 
 .no-sidebar {
   display: block;

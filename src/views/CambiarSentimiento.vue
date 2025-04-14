@@ -60,7 +60,7 @@
     <div class="cambiar-sentimiento">
       <h1>Detalles de la Mención</h1>
   
-      <div v-if="mencion">
+      <div v-if="mencion.titulo">
         <p><strong>Título:</strong> {{ mencion.titulo }}</p>
         <p><strong>Fuente:</strong> {{ mencion.fuente }}</p>
         <p><strong>Fecha:</strong> {{ formatFecha(mencion.fecha) }}</p>
@@ -73,8 +73,8 @@
       <h2>Modificar Sentimiento</h2>
       <select v-model="sentimientoSeleccionado">
         <option value="positivo">Positivo👍</option>
-        <option value="neutro">Neutro👎</option>
-        <option value="negativo">Negativo😐</option>
+        <option value="neutro">Neutro😐</option>
+        <option value="negativo">Negativo👎</option>
       </select>
   
       <button @click="guardarSentimiento">Guardar Sentimiento</button>

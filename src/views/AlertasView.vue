@@ -32,6 +32,7 @@ export default {
       <h2>Alertas</h2>
       <ul v-if="alertas.length > 0">
         <li v-for="alerta in alertas" :key="alerta.id" class="alerta-item">
+          <div v-if="alerta.nombre"></div>
           <div class="alerta-info">
             <h3>{{ alerta.nombre }}</h3>
             <p class="letrasAlerta" style="font-size: 15px;"><strong>Resuelta:</strong> <span :style="{ color: alerta.resuelta ? 'green' : 'red', fontWeight: 'bold' }">{{ alerta.resuelta ? 'Sí' : 'No' }}</span></p>
@@ -42,7 +43,10 @@ export default {
           </div>
         </li>
       </ul>
-      <p v-else><h3 style="color: red; text-align: center;">No tienes alertas activas</h3></p>
+      <h3 v-else style="color: red; text-align: center;">No tienes alertas activas</h3>
+      <div v-else>
+        <p>Cargando alertas...</p>
+      </div>
     </main>
   </div>
 </template>
@@ -128,12 +132,12 @@ button {
 }
 
 .btn-remove {
-  background-color: #c20000;
+  background-color: #dc3545;
   color: white;
 }
 
 .btn-remove:hover {
-  background-color: #9b0000;
+  background-color: #c82333;
 }
 
 .btn-view {

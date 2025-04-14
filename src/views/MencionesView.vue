@@ -34,6 +34,7 @@ export default {
       <h2>Mis menciones</h2>
       <ul v-if="menciones.length > 0">
         <li v-for="mencion in menciones" :key="mencion.id" :class="['mencion-item', { 'leida': mencion.leida }]">
+          <div v-if="mencion.titulo"></div>
           <a :href="mencion.enlace" target="_blank" class="mencion-link" @click="marcarMencionComoLeida(mencion.id)">
             <h3>{{ mencion.titulo }}</h3>
             <p><strong>Descripción:</strong> {{ mencion.descripcion }}</p>
@@ -50,6 +51,9 @@ export default {
         </li>
       </ul>
       <h3 v-else style="color: red; text-align: center;">Para ver tus menciones añade una alerta</h3>
+      <div v-else>
+        <p>Cargando menciones...</p>
+      </div>
     </main>
   </div>
 </template>
