@@ -7,6 +7,7 @@ import AlertasView from '@/views/AlertasView.vue'
 import UsuarioView from '@/views/UsuarioView.vue'
 import AnadirCliente from '@/views/AnadirCliente.vue'
 import ClientesView from '@/views/ClientesView.vue'
+import CambiarSentimiento from '@/views/CambiarSentimiento.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,6 +58,12 @@ const router = createRouter({
       path: '/clientes',
       name: 'clientes',
       component: ClientesView,
+    },
+    {
+      path: '/menciones/:id',
+      name: 'menciones-id',
+      component: CambiarSentimiento,
+      props: true,
     }
   ],
 })

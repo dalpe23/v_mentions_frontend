@@ -82,6 +82,19 @@ export const useDataStore = defineStore("data", {
       }
     },
 
+    async fetchMencion(id) {
+      try {
+        const headers = this.getAuthHeaders();
+        if (!headers) return;
+        const response = await axios.get(`${SERVER}/menciones/${id}`, headers);
+        return response.data;
+      } catch (error) {
+        this.anadirMensaje("Error al cargar la mención");
+        console.error("Error al cargar la mención:", error);
+      }
+    }
+    ,
+
     async marcarMencionComoLeida(id) {
       try {
         const headers = this.getAuthHeaders();
@@ -209,6 +222,25 @@ export const useDataStore = defineStore("data", {
       } catch (error) {
         this.anadirMensaje("Error al añadir el cliente");
         console.error("Error al añadir el cliente:", error);
+      }
+    },
+
+    async cambiarSentimiento(id, sentimiento) {
+      try {
+        const headers = this.getAuthHeaders();
+        if (!headers) return;
+
+        const response = await axios.patch(`${SERVER}/menciones/${id}/cambiarSentimiento`, {
+          sentimiento: sentimiento,
+        }, headers);
+
+        if (response.status === 200) {
+          this.anadirMensaje("Sentimiento cambiado correctamente");
+          this.fetchMenciones();
+        } 
+      } catch (error) {
+        this.anadirMensaje("Error al cambiar el sentimiento");
+        console.error("Error al cambiar el sentimiento:", error);
       }
     },
 

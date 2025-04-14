@@ -46,6 +46,7 @@ export default {
             <span v-else title="Sentimiento neutral">😐</span>
           </div>
           <button class="mencion-btn" @click="marcarMencioneComoNoLeida(mencion.id) ">Marcar como no leída</button>
+          <button class="mencion-btn-cambiar" @click="$router.push('/menciones/'+ mencion.id)">Cambiar Valoración Manualmente </button>
         </li>
       </ul>
       <h3 v-else style="color: red; text-align: center;">Para ver tus menciones añade una alerta</h3>
@@ -70,6 +71,26 @@ html, body, #app {
   cursor: pointer;
   bottom: 1rem;
   left: 1rem;
+}
+
+.mencion-btn:hover {
+  background-color: #0056b3;
+}
+
+.mencion-btn-cambiar {
+  background-color: #f0ad4e;
+  color: white;
+  border: none;
+  margin: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.mencion-btn-cambiar:hover {
+  background-color: #ec971f;
 }
 
 .app-container {
