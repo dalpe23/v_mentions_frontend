@@ -34,6 +34,7 @@ export default{
     <div class="clientes-card">
       <h1 class="clientes-title">Lista de Clientes</h1>
       <ul class="clientes-list">
+        <button class="btn-register" @click="$router.push('/anadir-cliente')">Dar de alta Usuario</button>
         <li v-for="cliente in clientes" :key="cliente.id" class="cliente-item">
           <div class="cliente-info">
             <p><strong>Nombre:</strong> {{ cliente.name }}</p>
@@ -42,7 +43,7 @@ export default{
           </div>
           <button class="delete-button" @click="eliminarCliente(cliente.id)">Borrar</button>
         </li>
-      </ul>
+      </ul>    
     </div>
   </div>
 </template>
@@ -57,6 +58,23 @@ export default{
   background-color: #f5f5f5;
   margin: 0;
 }
+
+.btn-register {
+  background-color: #28a745;
+  color: white;
+  padding: 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+    margin-bottom: 1rem;
+}
+
+.btn-register:hover {
+  background-color: #218838;
+}
+
 
 .clientes-card {
   background-color: #ffffff;
@@ -103,8 +121,9 @@ export default{
   border-radius: 5px;
   padding: 10px 15px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.2rem;
   transition: background-color 0.3s;
+
 }
 
 .delete-button:hover {

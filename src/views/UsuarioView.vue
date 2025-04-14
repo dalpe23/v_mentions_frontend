@@ -47,8 +47,8 @@ export default {
       <p></p>
     </div>
     <div class="usuario-actions">
-      <button v-if="usuario.rol === 'admin'" class="btn-register" @click="$router.push('/anadir-cliente')">Dar de alta Usuario</button>
-      <button v-if="usuario.rol === 'admin'" class="btn-ver" @click="$router.push('/clientes')">Ver todos los clientes</button>
+     <!-- <button v-if="usuario.rol === 'admin'" class="btn-register" @click="$router.push('/anadir-cliente')">Dar de alta Usuario</button> -->
+      <button v-if="usuario.rol === 'admin'" class="btn-ver" @click="$router.push('/clientes')">Panel de Usuarios</button>
       <button class="btn-logout" @click="logout">Logout</button>
     </div>
   </div>

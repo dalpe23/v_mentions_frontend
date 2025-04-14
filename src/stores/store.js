@@ -81,6 +81,41 @@ export const useDataStore = defineStore("data", {
       }
     },
 
+    async marcarMencionComoLeida(id) {
+      try {
+        const headers = this.getAuthHeaders();
+        if (!headers) return;
+
+        await axios.patch(`${SERVER}/menciones/${id}/leida`, {}, headers);
+
+        const mencion = this.menciones.find(m => m.id === id);
+        if (mencion) {
+          mencion.leida = true;
+        }
+      } catch (error) {
+        alert("Error al marcar la mención como leída");
+        console.error("Error al marcar la mención como leída:", error);
+      }
+    },
+
+    async marcarMencioneComoNoLeida(id) {
+      try {
+        const headers = this.getAuthHeaders();
+        if (!headers) return;
+
+        await axios.patch(`${SERVER}/menciones/${id}/ponerComoNoLeida`, {}, headers);
+        await this.fetchMenciones();
+        alert("Mención marcada como no leída");
+        const mencion = this.menciones.find(m => m.id === id);
+        if (mencion) {
+          mencion.leida = false;
+        }
+      } catch (error) {
+        alert("Error al marcar la mención como no leída");
+        console.error("Error al marcar la mención como no leída:", error);
+      }
+    },
+
     async fetchAlertas() {
       try {
         const headers = this.getAuthHeaders();
@@ -101,7 +136,7 @@ export const useDataStore = defineStore("data", {
         if (!headers) return;
 
         const response = await axios.delete(`${SERVER}/alertas/${id}`, headers);
-        alert("Alerta eliminada correctamente");
+        await this.fetchAlertas();
         console.log(response);
 
       } catch (error) {

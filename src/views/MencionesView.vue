@@ -9,7 +9,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(useDataStore, ["fetchMenciones"]),
+    ...mapActions(useDataStore, ["fetchMenciones", "marcarMencionComoLeida", "marcarMencioneComoNoLeida"]),
 
     formatFecha(fecha) {
       const date = new Date(fecha);
@@ -32,9 +32,9 @@ export default {
   <div class="app-container">
     <main class="main-content">
       <h2>Mis menciones</h2>
-      <ul>
-        <li v-for="mencion in menciones" :key="mencion.id" class="mencion-item">
-          <a :href="mencion.enlace" target="_blank" class="mencion-link">
+      <ul v-if="menciones.length > 0">
+        <li v-for="mencion in menciones" :key="mencion.id" :class="['mencion-item', { 'leida': mencion.leida }]">
+          <a :href="mencion.enlace" target="_blank" class="mencion-link" @click="marcarMencionComoLeida(mencion.id)">
             <h3>{{ mencion.titulo }}</h3>
             <p><strong>Descripción:</strong> {{ mencion.descripcion }}</p>
             <p><strong>Fecha:</strong> {{ formatFecha(mencion.fecha) }}</p>
@@ -45,8 +45,10 @@ export default {
             <span v-else-if="mencion.sentimiento === 'negativo'" title="Sentimiento negativo">👎</span>
             <span v-else title="Sentimiento neutral">😐</span>
           </div>
+          <button class="mencion-btn" @click="marcarMencioneComoNoLeida(mencion.id) ">Marcar como no leída</button>
         </li>
       </ul>
+      <h3 v-else style="color: red; text-align: center;">Para ver tus menciones añade una alerta</h3>
     </main>
   </div>
 </template>
@@ -55,6 +57,19 @@ export default {
 html, body, #app {
   margin: 0;
   padding: 0;
+}
+
+.mencion-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  margin: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  bottom: 1rem;
+  left: 1rem;
 }
 
 .app-container {
@@ -76,6 +91,8 @@ h2 {
   text-align: center;
   margin-bottom: 1.5rem;
   color: #333;
+  font-size: 3rem;
+
 }
 
 ul {
@@ -122,5 +139,9 @@ ul {
   top: 4rem;
   right: 7rem;
   font-size: 2rem;
+}
+
+.mencion-item.leida {
+  background-color: #e0ffe0;
 }
 </style>

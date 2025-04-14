@@ -30,19 +30,19 @@ export default {
   <div class="alertas-container">
     <main class="alertas-content">
       <h2>Alertas</h2>
-      <ul>
+      <ul v-if="alertas.length > 0">
         <li v-for="alerta in alertas" :key="alerta.id" class="alerta-item">
           <div class="alerta-info">
             <h3>{{ alerta.nombre }}</h3>
-            <p class="letrasAlerta"><strong>Resuelta:</strong> {{ alerta.resuelta ? 'Sí' : 'No' }}</p>
+            <p class="letrasAlerta" style="font-size: 15px;"><strong>Resuelta:</strong> <span :style="{ color: alerta.resuelta ? 'green' : 'red', fontWeight: 'bold' }">{{ alerta.resuelta ? 'Sí' : 'No' }}</span></p>
           </div>
           <div class="alerta-buttons">
             <button :disabled="alerta.resuelta" class="btn-view" @click="marcarResuelta(alerta.id)">Marcar como resuelta</button>
             <button class="btn-remove" @click="eliminar(alerta.id)">Borrar Alerta</button>
-          <!-- <button class="btn-view" @click="$router.push(`/alertas/${alerta.id}/menciones`)">Ver Menciones</button> -->
           </div>
         </li>
       </ul>
+      <p v-else><h3 style="color: red; text-align: center;">No tienes alertas activas</h3></p>
     </main>
   </div>
 </template>
@@ -80,6 +80,8 @@ html, body, #app {
   text-align: center;
   margin-bottom: 1.5rem;
   color: #333;
+  font-size: 3rem;
+
 }
 
 ul {
@@ -147,5 +149,10 @@ button:disabled {
   background-color: #cccccc; /* Color más tenue */
   cursor: not-allowed; /* Cursor indicando que no es clicable */
   opacity: 0.6; /* Hacerlo más translúcido */
+}
+
+.letrasAlerta {
+  font-size: 3rem; /* Aumentar el tamaño de la fuente */
+  color: #555;
 }
 </style>
