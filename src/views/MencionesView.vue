@@ -38,6 +38,7 @@ export default {
           <a :href="mencion.enlace" target="_blank" class="mencion-link" @click="marcarMencionComoLeida(mencion.id)">
             <h3>{{ mencion.titulo }}</h3>
             <p><strong>Descripción:</strong> {{ mencion.descripcion }}</p>
+            <p><strong>Temáticas:</strong> {{ mencion.tema }}</p>
             <p><strong>Fecha:</strong> {{ formatFecha(mencion.fecha) }}</p>
             <p><strong>Fuente:</strong> {{ mencion.fuente }}</p>
           </a>
@@ -99,8 +100,8 @@ html, body, #app {
 
 .app-container {
   display: flex;
-  width: 85vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   overflow-x: hidden;
 }
 
@@ -110,6 +111,7 @@ html, body, #app {
   padding: 2rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
+  width: 100%;
 }
 
 h2 {

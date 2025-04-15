@@ -38,10 +38,18 @@ export default {
       <RouterLink to="/welcome">
         <img src="/VMentions.png" alt="logo" class="logo" />
       </RouterLink>
-      <RouterLink to="/alertas">Alertas</RouterLink>
-      <RouterLink to="/menciones">Menciones</RouterLink>
-      <RouterLink to="/nueva-alerta">Nueva Alerta</RouterLink>
-      <RouterLink to="/usuario">Usuario</RouterLink>
+      <RouterLink to="/menciones">
+        <img src="/mencionar.png" alt="Menciones" class="sidebar-icon" /> Menciones
+      </RouterLink>
+      <RouterLink to="/alertas">
+        <img src="/agregar-alerta.png" alt="Alertas" class="sidebar-icon" /> Alertas
+      </RouterLink>
+      <RouterLink to="/nueva-alerta">
+        <img src="/anadir-alarma.png" alt="Nueva Alerta" class="sidebar-icon" /> Nueva Alerta
+      </RouterLink>
+      <RouterLink to="/usuario">
+        <img src="/avatar.png" alt="Usuario" class="sidebar-icon" /> Usuario
+      </RouterLink>
     </aside>
 
     <main class="main-content">  
@@ -57,10 +65,16 @@ export default {
   font-weight: 400;
 }
 
+html, body, #app {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
 .app-container {
   display: flex;
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
 }
 
 .main-content {
@@ -69,10 +83,14 @@ export default {
   padding: 2rem;
   overflow-y: auto;
   overflow-x: auto;
+  height: 100%;
+  width: 100%;
 }
 
 .sidebar {
-  width: 250px;
+  flex-shrink: 0;
+  height: auto; 
+  width: 300px; 
   background-color: #2d2f33;
   color: white;
   padding: 1rem;
@@ -87,9 +105,13 @@ export default {
 }
 
 .sidebar a {
-  margin: 0;
-  padding: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 5px 0;
+  padding: 5px 0;
   text-decoration: none;
+  font-size: 20px;
   color: white;
   transition: transform 0.2s ease, background-color 0.2s ease;
 }
@@ -103,6 +125,12 @@ export default {
 .sidebar a.router-link-active {
   font-weight: bold;
   }
+
+.sidebar-icon {
+  margin-left: 15px;
+  width: 20px;
+  height: 20px;
+}
 
 .no-sidebar {
   display: block;

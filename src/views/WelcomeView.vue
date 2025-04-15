@@ -64,9 +64,11 @@ export default {
 
 .admin-panel {
   width: 90%;
+  height: 100%;
   margin: auto;
   padding: 2rem;
   text-align: center;
+  
 }
 
 .content-container {
@@ -74,6 +76,8 @@ export default {
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
+  height: 100%;
+  width: 100%;
 }
 
 .image-container {
@@ -85,7 +89,7 @@ export default {
 }
 
 .playa-image {
-  width: 800px;
+  width: 100%;
   max-width: 800px; 
   height: auto;
   animation: slideInFromTop 1.5s ease-out; 

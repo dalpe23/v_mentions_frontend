@@ -59,7 +59,8 @@ html, body, #app {
 
 .alertas-container {
   display: flex;
-  width: 80vw;
+  width: 100%;
+  height: 100%;
   box-sizing: border-box;
   background-color: #f5f5f5;
   min-height: 90vh;
@@ -67,8 +68,8 @@ html, body, #app {
 
 .app-container {
   display: flex;
-  width: 85vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   overflow-x: hidden;
 }
 
