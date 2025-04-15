@@ -48,8 +48,8 @@ export default {
     </div>
     <div class="usuario-actions">
      <!-- <button v-if="usuario.rol === 'admin'" class="btn-register" @click="$router.push('/anadir-cliente')">Dar de alta Usuario</button> -->
-      <button v-if="usuario.rol === 'admin'" class="btn-ver" @click="$router.push('/clientes')">Panel de Usuarios</button>
-      <button class="btn-logout" @click="logout">Logout</button>
+      <button v-if="usuario.rol === 'admin'" class="btn-ver" @click="$router.push('/clientes')">Admin User Panel</button>
+      <button class="btn-logout" @click="logout">Cerrar Sesión</button>
     </div>
   </div>
 </template>
@@ -122,11 +122,11 @@ button {
 }
 
 .btn-ver {
-  background-color: #2878a7;
+  background-color: #390071;
   color: white;
 }
 
 .btn-ver:hover {
-  background-color: #0049bf;
+  background-color: #0f0038;
 }
 </style>

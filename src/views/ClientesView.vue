@@ -32,7 +32,7 @@ export default{
 <template>
   <div class="clientes-container">
     <div class="clientes-card">
-      <h1 class="clientes-title">Lista de Clientes</h1>
+      <h1 class="clientes-title">Listado de Clientes</h1>
       <ul class="clientes-list">
         <button class="btn-register" @click="$router.push('/anadir-cliente')">Dar de alta Usuario</button>
         <li v-for="cliente in clientes" :key="cliente.id" class="cliente-item">
@@ -41,7 +41,7 @@ export default{
             <p><strong>Email:</strong> {{ cliente.email }}</p>
             <p><strong>Rol:</strong> {{ cliente.rol }}</p>
           </div>
-          <button class="delete-button" @click="eliminarCliente(cliente.id)">Borrar</button>
+          <button class="delete-button" @click="eliminarCliente(cliente.id)">Eliminar Usuario</button>
         </li>
       </ul>    
     </div>
@@ -53,9 +53,8 @@ export default{
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  width: 84vw;
-  background-color: #f5f5f5;
+  height: 100%;
+  width: 100%;
   margin: 0;
 }
 

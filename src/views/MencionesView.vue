@@ -31,14 +31,14 @@ export default {
 <template>
   <div class="app-container">
     <main class="main-content">
-      <h2>Mis menciones</h2>
+      <h2>Mis Menciones</h2>
       <ul v-if="menciones.length > 0">
         <li v-for="mencion in menciones" :key="mencion.id" :class="['mencion-item', { 'leida': mencion.leida }]">
           <div v-if="mencion.titulo"></div>
           <a :href="mencion.enlace" target="_blank" class="mencion-link" @click="marcarMencionComoLeida(mencion.id)">
             <h3>{{ mencion.titulo }}</h3>
             <p><strong>Descripción:</strong> {{ mencion.descripcion }}</p>
-            <p><strong>Temáticas:</strong> {{ mencion.tema }}</p>
+            <p><strong>Temáticas:</strong> {{ mencion.tematica }}</p>
             <p><strong>Fecha:</strong> {{ formatFecha(mencion.fecha) }}</p>
             <p><strong>Fuente:</strong> {{ mencion.fuente }}</p>
           </a>

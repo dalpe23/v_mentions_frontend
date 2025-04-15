@@ -43,7 +43,7 @@ export default {
 
 <template>
   <div class="alerta-container">
-    <h2>Añadir nueva Alerta</h2>
+    <h2>Crear una Alerta</h2>
     <Form @submit="handleSubmit" :validation-schema="schema">
       <div class="form-group">
         <label for="keywords">Keywords</label>

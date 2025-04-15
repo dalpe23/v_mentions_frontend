@@ -85,8 +85,8 @@
   .cambiar-sentimiento {
     display: flex;
     flex-direction: column;
-    height: 90vh;
-    width: 85vw;
+    height: 100%;
+    width: 100%;
     margin: 0 auto;
     padding: 2rem;
     background: #fff;

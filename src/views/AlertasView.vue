@@ -29,7 +29,7 @@ export default {
 <template>
   <div class="alertas-container">
     <main class="alertas-content">
-      <h2>Alertas</h2>
+      <h2>Mis Alertas</h2>
       <ul v-if="alertas.length > 0">
         <li v-for="alerta in alertas" :key="alerta.id" class="alerta-item">
           <div v-if="alerta.nombre"></div>
@@ -118,6 +118,7 @@ ul {
 
 .alerta-buttons {
   margin-top: 1rem;
+  font-size: 20px;
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
@@ -134,6 +135,7 @@ button {
 
 .btn-remove {
   background-color: #dc3545;
+  font-size: 20px;
   color: white;
 }
 
@@ -143,6 +145,7 @@ button {
 
 .btn-view {
   background-color: #007bff;
+  font-size: 20px;
   color: white;
 }
 
@@ -151,13 +154,13 @@ button {
 }
 
 button:disabled {
-  background-color: #cccccc; /* Color más tenue */
-  cursor: not-allowed; /* Cursor indicando que no es clicable */
-  opacity: 0.6; /* Hacerlo más translúcido */
+  background-color: #cccccc; 
+  cursor: not-allowed; 
+  opacity: 0.6;
 }
 
 .letrasAlerta {
-  font-size: 3rem; /* Aumentar el tamaño de la fuente */
+  font-size: 3rem;
   color: #555;
 }
 </style>
