@@ -32,7 +32,7 @@ export default {
 
   methods: {
     ...mapActions(useDataStore, ["fetchMenciones", "fetchAlertas", "marcarMencionComoLeida", "marcarMencioneComoNoLeida"]),
-
+    
     formatFecha(fecha) {
       const date = new Date(fecha);
       const dia = date.getDate().toString().padStart(2, "0");
@@ -56,7 +56,33 @@ export default {
         estado: '',
       };
       this.aplicarFiltros();
-    }
+    },
+
+    exportarExcel() {
+      const timestamp = new Date().toISOString().replace(/[-:.]/g, "").slice(0, 15);
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += `"Título","Descripción","Temáticas","Fecha","Fuente","Sentimiento","Revisada","Enlace"\n`;
+
+      this.mencionesFiltradas.forEach(mencion => {
+        let titulo = mencion.titulo ? mencion.titulo.replace(/"/g, '""') : "";
+        let descripcion = mencion.descripcion ? mencion.descripcion.replace(/"/g, '""') : "";
+        let tematica = mencion.tematica ? mencion.tematica.replace(/"/g, '""') : "";
+        let fecha = this.formatFecha(mencion.fecha);
+        let fuente = mencion.fuente ? mencion.fuente.replace(/"/g, '""') : "";
+        let sentimiento = mencion.sentimiento || "";
+        let leida = mencion.leida ? "Sí" : "No";
+        let enlace = mencion.enlace ? mencion.enlace.replace(/"/g, '""') : "";
+        csvContent += `"${titulo}","${descripcion}","${tematica}","${fecha}","${fuente}","${sentimiento}","${leida}","${enlace}"\n`;
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `menciones_${timestamp}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    },
   },
 
   async mounted() {
@@ -72,30 +98,42 @@ export default {
       <h2>Mis Menciones</h2>
 
       <section class="filtros">
-        <p>Fecha desde:</p>
-        <input type="date" v-model="filtro.fechaDesde" />
-        <p>Fecha hasta:</p>
-        <input type="date" v-model="filtro.fechaHasta" />
-
-        <select v-model="filtro.alerta">
-          <option value="">Todas mis alertas</option>
-          <option v-for="alerta in alertas" :key="alerta.id" :value="alerta.id">{{ alerta.nombre }}</option>
-        </select>
-
-        <select v-model="filtro.valoracion">
-          <option value="">Todas las valoraciones</option>
-          <option value="positivo">Positivas</option>
-          <option value="negativo">Negativas</option>
-          <option value="neutro">Neutras</option>
-        </select>
-
-        <select v-model="filtro.estado">
-          <option value="">Todos los estados</option>
-          <option value="no_leida">Nuevas</option>
-          <option value="leida">Revisadas</option>
-        </select>
-
-        <button class="limpiarFiltro" @click="limpiarFiltros">Limpiar filtros</button>
+        <div>
+          <label><strong>Fecha desde:</strong></label>
+          <input type="date" v-model="filtro.fechaDesde" />
+        </div>
+        <div>
+          <label><strong>Fecha hasta</strong>:</label>
+          <input type="date" v-model="filtro.fechaHasta" />
+        </div>
+        <div>
+          <label><strong>Alerta:</strong></label>
+          <select v-model="filtro.alerta">
+            <option value="">Todas mis alertas</option>
+            <option v-for="alerta in alertas" :key="alerta.id" :value="alerta.id">{{ alerta.nombre }}</option>
+          </select>
+        </div>
+        <div>
+          <label><strong>Valoración:</strong></label>
+          <select v-model="filtro.valoracion">
+            <option value="">Todas las valoraciones</option>
+            <option value="positivo">Positivas</option>
+            <option value="negativo">Negativas</option>
+            <option value="neutro">Neutras</option>
+          </select>
+        </div>
+        <div>
+          <label><strong>Estado:</strong></label>
+          <select v-model="filtro.estado">
+            <option value="">Todos los estados</option>
+            <option value="no_leida">Nuevas</option>
+            <option value="leida">Revisadas</option>
+          </select>
+        </div>
+        <div class="botones-filtros" style="display: flex; gap: 1rem;">
+          <button class="limpiarFiltro" @click="limpiarFiltros"><strong>Limpiar filtros</strong></button>
+          <button class="exportarFiltro" @click="exportarExcel"><strong>Exportar menciones</strong></button>
+        </div>
       </section>
 
       <ul v-if="mencionesFiltradas.length > 0">
@@ -113,12 +151,12 @@ export default {
             <span v-else title="Sentimiento neutral">😐</span>
           </div>
           <button class="mencion-btn" @click="marcarMencioneComoNoLeida(mencion.id)">Marcar como no leída</button>
-          <button class="mencion-btn-cambiar" @click="$router.push('/menciones/'+ mencion.id)">Cambiar Valoración Manualmente</button>
+          <button class="mencion-btn-cambiar" @click="$router.push('/menciones/' + mencion.id)">Cambiar Valoración Manualmente</button>
         </li>
       </ul>
+
       <div v-else>
-        <h3 style="color: red; text-align: center;">No se han encontrado menciones</h3>
-        <p v-if="!menciones.length">Cargando menciones...</p>
+        <p v-if="!menciones.length" style="text-align: center; font-size: 20px;">Cargando menciones...</p>
       </div>
     </main>
   </div>
@@ -138,10 +176,24 @@ html, body, #app {
   font-size: 20px;
   border-radius: 5px;
   cursor: pointer;
+
 }
 
 .limpiarFiltro:hover{
   background-color: #d32f2f;
+}
+
+.exportarFiltro{
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  font-size: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.exportarFiltro:hover{
+  background-color: #388E3C;
 }
 
 .filtros {
@@ -186,7 +238,7 @@ html, body, #app {
 }
 
 .mencion-btn-cambiar {
-  background-color: #f0ad4e;
+  background-color: #f19f2c;
 }
 
 .mencion-btn:hover {
@@ -194,7 +246,7 @@ html, body, #app {
 }
 
 .mencion-btn-cambiar:hover {
-  background-color: #ec971f;
+  background-color: #da8b1d;
 }
 
 .app-container {

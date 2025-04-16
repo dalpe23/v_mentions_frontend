@@ -43,9 +43,9 @@ export default {
           </div>
         </li>
       </ul>
-      <h3 v-else style="color: red; text-align: center;">No tienes alertas activas</h3>
+      <h3 v-else style="color: red; text-align: center; font-size: 20px;">No tienes alertas activas</h3>
       <div v-else>
-        <p>Cargando alertas...</p>
+        <p v-if="!alertas.length" style="text-align: center; font-size: 20px;">Cargando alertas...</p>
       </div>
     </main>
   </div>
