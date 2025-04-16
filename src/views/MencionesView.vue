@@ -4,12 +4,34 @@ import { mapActions, mapState } from 'pinia';
 
 export default {
   name: "MencionesView",
+  data() {
+    return {
+      filtro: {
+        fechaDesde: '',
+        fechaHasta: '',
+        alerta: '',
+        valoracion: '',
+        estado: '',
+      }
+    };
+  },
   computed: {
-    ...mapState(useDataStore, ["menciones"]),
+    ...mapState(useDataStore, ["menciones", "alertas"]),
+    mencionesFiltradas() {
+      return this.menciones.filter(mencion => {
+        const fechaValida = (!this.filtro.fechaDesde || new Date(mencion.fecha) >= new Date(this.filtro.fechaDesde)) &&
+                            (!this.filtro.fechaHasta || new Date(mencion.fecha) <= new Date(this.filtro.fechaHasta + 'T23:59:59'));
+        const alertaValida = (!this.filtro.alerta || mencion.alerta_id == this.filtro.alerta);
+        const valoracionValida = (!this.filtro.valoracion || mencion.sentimiento === this.filtro.valoracion);
+        const estadoValido = (!this.filtro.estado || (this.filtro.estado === 'leida' && mencion.leida) || (this.filtro.estado === 'no_leida' && !mencion.leida));
+
+        return fechaValida && alertaValida && valoracionValida && estadoValido;
+      });
+    },
   },
 
   methods: {
-    ...mapActions(useDataStore, ["fetchMenciones", "marcarMencionComoLeida", "marcarMencioneComoNoLeida"]),
+    ...mapActions(useDataStore, ["fetchMenciones", "fetchAlertas", "marcarMencionComoLeida", "marcarMencioneComoNoLeida"]),
 
     formatFecha(fecha) {
       const date = new Date(fecha);
@@ -20,10 +42,26 @@ export default {
       const minutos = date.getMinutes().toString().padStart(2, "0");
       return `${dia}/${mes}/${anio} ${hora}:${minutos}`;
     },
+
+    aplicarFiltros() {
+      this.fetchMenciones();
+    },
+
+    limpiarFiltros() {
+      this.filtro = {
+        fechaDesde: '',
+        fechaHasta: '',
+        alerta: '',
+        valoracion: '',
+        estado: '',
+      };
+      this.aplicarFiltros();
+    }
   },
 
   async mounted() {
-    // await this.fetchMenciones();
+    await this.fetchAlertas();
+    await this.fetchMenciones();
   },
 };
 </script>
@@ -32,9 +70,36 @@ export default {
   <div class="app-container">
     <main class="main-content">
       <h2>Mis Menciones</h2>
-      <ul v-if="menciones.length > 0">
-        <li v-for="mencion in menciones" :key="mencion.id" :class="['mencion-item', { 'leida': mencion.leida }]">
-          <div v-if="mencion.titulo"></div>
+
+      <section class="filtros">
+        <p>Fecha desde:</p>
+        <input type="date" v-model="filtro.fechaDesde" />
+        <p>Fecha hasta:</p>
+        <input type="date" v-model="filtro.fechaHasta" />
+
+        <select v-model="filtro.alerta">
+          <option value="">Todas mis alertas</option>
+          <option v-for="alerta in alertas" :key="alerta.id" :value="alerta.id">{{ alerta.nombre }}</option>
+        </select>
+
+        <select v-model="filtro.valoracion">
+          <option value="">Todas las valoraciones</option>
+          <option value="positivo">Positivas</option>
+          <option value="negativo">Negativas</option>
+          <option value="neutro">Neutras</option>
+        </select>
+
+        <select v-model="filtro.estado">
+          <option value="">Todos los estados</option>
+          <option value="no_leida">Nuevas</option>
+          <option value="leida">Revisadas</option>
+        </select>
+
+        <button class="limpiarFiltro" @click="limpiarFiltros">Limpiar filtros</button>
+      </section>
+
+      <ul v-if="mencionesFiltradas.length > 0">
+        <li v-for="mencion in mencionesFiltradas" :key="mencion.id" :class="['mencion-item', { 'leida': mencion.leida }]">
           <a :href="mencion.enlace" target="_blank" class="mencion-link" @click="marcarMencionComoLeida(mencion.id)">
             <h3>{{ mencion.titulo }}</h3>
             <p><strong>Descripción:</strong> {{ mencion.descripcion }}</p>
@@ -47,13 +112,13 @@ export default {
             <span v-else-if="mencion.sentimiento === 'negativo'" title="Sentimiento negativo">👎</span>
             <span v-else title="Sentimiento neutral">😐</span>
           </div>
-          <button class="mencion-btn" @click="marcarMencioneComoNoLeida(mencion.id) ">Marcar como no leída</button>
-          <button class="mencion-btn-cambiar" @click="$router.push('/menciones/'+ mencion.id)">Cambiar Valoración Manualmente </button>
+          <button class="mencion-btn" @click="marcarMencioneComoNoLeida(mencion.id)">Marcar como no leída</button>
+          <button class="mencion-btn-cambiar" @click="$router.push('/menciones/'+ mencion.id)">Cambiar Valoración Manualmente</button>
         </li>
       </ul>
-      <h3 v-else style="color: red; text-align: center;">Para ver tus menciones añade una alerta</h3>
       <div v-else>
-        <p>Cargando menciones...</p>
+        <h3 style="color: red; text-align: center;">No se han encontrado menciones</h3>
+        <p v-if="!menciones.length">Cargando menciones...</p>
       </div>
     </main>
   </div>
@@ -65,7 +130,51 @@ html, body, #app {
   padding: 0;
 }
 
-.mencion-btn {
+.limpiarFiltro{
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.limpiarFiltro:hover{
+  background-color: #d32f2f;
+}
+
+.filtros {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.filtros p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.filtros input[type="date"],
+.filtros select {
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.filtros input[type="date"] {
+  width: 12rem;
+}
+
+.filtros select {
+  width: 15rem;
+}
+
+.mencion-btn, .mencion-btn-cambiar {
   background-color: #007bff;
   color: white;
   border: none;
@@ -74,24 +183,14 @@ html, body, #app {
   font-size: 20px;
   border-radius: 5px;
   cursor: pointer;
-  bottom: 1rem;
-  left: 1rem;
-}
-
-.mencion-btn:hover {
-  background-color: #0056b3;
 }
 
 .mencion-btn-cambiar {
   background-color: #f0ad4e;
-  color: white;
-  border: none;
-  margin: 1rem;
-  padding: 0.5rem 1rem;
-  font-size: 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+}
+
+.mencion-btn:hover {
+  background-color: #0056b3;
 }
 
 .mencion-btn-cambiar:hover {
@@ -111,7 +210,6 @@ html, body, #app {
   padding: 2rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
-  width: 100%;
 }
 
 h2 {
@@ -119,17 +217,15 @@ h2 {
   margin-bottom: 1.5rem;
   color: #333;
   font-size: 3rem;
-
 }
 
 ul {
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
 .mencion-item {
-  position: relative; 
+  position: relative;
   margin-bottom: 1rem;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -139,26 +235,15 @@ ul {
 }
 
 .mencion-item:hover {
-  transform: scale(1.02); 
+  transform: scale(1.02);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .mencion-link {
-  display: block; 
-  text-decoration: none;
-  color: inherit; 
+  display: block;
   padding: 1rem;
-  height: 100%;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.mencion-link h3 {
-  margin: 0 0 0.5rem;
-}
-
-.mencion-link p {
-  margin: 0.5rem 0;
+  text-decoration: none;
+  color: inherit;
 }
 
 .sentimiento-icon {
