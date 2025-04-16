@@ -144,6 +144,21 @@ export const useDataStore = defineStore("data", {
       }
     },
 
+    async crearAlerta(alertaData) {
+      try {
+        const headers = this.getAuthHeaders();
+        if (!headers) return;
+        const response = await axios.post(`${SERVER}/alertas`, alertaData, headers);
+        await this.fetchAlertas();
+        this.anadirMensaje("Alerta enviada correctamente.");
+        return response.data;
+      } catch (error) {
+        this.anadirMensaje("Error al crear la alerta.");
+        console.error("Error al crear alerta:", error);
+        return null;
+      }
+    },
+
     async deleteAlerta(id) {
       try {
         const headers = this.getAuthHeaders();

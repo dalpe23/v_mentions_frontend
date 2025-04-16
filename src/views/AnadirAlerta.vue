@@ -1,16 +1,16 @@
 <script>
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
+import { mapActions } from "pinia";
+import { useDataStore } from "@/stores/store";
 
 export default {
   name: "AnadirAlerta",
-
   components: {
     Form,
     Field,
     ErrorMessage,
   },
-
   data() {
     return {
       form: {
@@ -24,18 +24,17 @@ export default {
           .min(3, "Las keywords deben tener al menos 3 caracteres")
           .max(100, "Las keywords no pueden exceder los 100 caracteres")
           .required("Las keywords son obligatorias"),
-        idioma: yup
-          .string()
-          .required("El idioma es obligatorio"),
+        idioma: yup.string().required("El idioma es obligatorio"),
       }),
     };
   },
-
   methods: {
+    ...mapActions(useDataStore, ["crearAlerta"]),
     async handleSubmit(values) {
-      console.log("Valores recibidos:", values);
-      alert("Alerta enviada");
-      this.$router.push('/alertas');
+      const resultado = await this.crearAlerta(values);
+      if (resultado) {
+        this.$router.push('/alertas');
+      }
     },
   },
 };
@@ -50,7 +49,6 @@ export default {
         <Field name="keywords" type="text" v-model="form.keywords" class="form-input" />
         <ErrorMessage name="keywords" class="form-error" />
       </div>
-
       <div class="form-group">
         <label for="idioma">Idioma</label>
         <Field as="select" name="idioma" v-model="form.idioma" class="form-input">
@@ -68,7 +66,6 @@ export default {
         </Field>
         <ErrorMessage name="idioma" class="form-error" />
       </div>
-
       <button type="submit" class="btn-submit">Enviar Alerta</button>
     </Form>
   </div>
@@ -102,7 +99,7 @@ export default {
 
 .form-input {
   width: 100%;
-  padding: 1rem; 
+  padding: 1rem;
   border: 1px solid #cccccc;
   border-radius: 6px;
   font-size: 1.2rem;
@@ -117,19 +114,19 @@ export default {
 
 .form-error {
   color: #e74c3c;
-  font-size: 1rem; 
+  font-size: 1rem;
   margin-top: 0.5rem;
 }
 
 .btn-submit {
   width: 100%;
   max-width: 600px;
-  padding: 1rem; 
+  padding: 1rem;
   background-color: #007bff;
   color: #fff;
   border: none;
   border-radius: 6px;
-  font-size: 1.2rem; 
+  font-size: 1.2rem;
   cursor: pointer;
   margin-top: 1.5rem;
   transition: background-color 0.3s;

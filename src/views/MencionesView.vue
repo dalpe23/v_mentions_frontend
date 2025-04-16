@@ -300,8 +300,8 @@ ul {
 
 .sentimiento-icon {
   position: absolute;
-  top: 4rem;
-  right: 7rem;
+  top: 6rem;
+  right: 6rem;
   font-size: 2rem;
 }
 
