@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import axios from "axios";
 
- const SERVER = "http://localhost/api";
-// const SERVER = "https://v-mentions.myp.com.es/Laravel/public/api";
+// const SERVER = "http://localhost/api";
+ const SERVER = "https://v-mentions.myp.com.es/Laravel/public/api";
 // https://v-mentions.myp.com.es/Laravel/public/api/menciones
 
 export const useDataStore = defineStore("data", {
