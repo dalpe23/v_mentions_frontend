@@ -44,9 +44,15 @@ export default {
 
   methods: {
     async handleSubmit(values) {
-      const { name, email } = values;
-        await this.AnadirCliente(name, email);
-        this.$router.push("/clientes");
+      try {
+        const { name, email } = values;
+        const resultado = await this.AnadirCliente(name, email);
+        if (resultado === true) {
+          this.$router.push("/clientes");
+        }
+      } catch (error) {
+        console.error("Error al añadir cliente:", error);
+      }
     },
   },
 };

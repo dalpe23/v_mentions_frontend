@@ -43,6 +43,9 @@ export default{
           </div>
           <button class="delete-button" @click="eliminarCliente(cliente.id)">Eliminar Usuario</button>
         </li>
+        <div>
+        <p v-if="!clientes.length" style="text-align: center; font-size: 20px;">Cargando clientes...</p>
+      </div>
       </ul>    
     </div>
   </div>

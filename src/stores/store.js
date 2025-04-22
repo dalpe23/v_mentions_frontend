@@ -222,21 +222,23 @@ export const useDataStore = defineStore("data", {
     async AnadirCliente(nombre, correo) {
       try {
         const headers = this.getAuthHeaders();
-        if (!headers) return;
+        if (!headers) return false;
 
         const response = await axios.post(`${SERVER}/clientes`, {
           name: nombre,
           email: correo,
         }, headers);
-        console.log(response);
 
-        if (response.status === 200) {
+        if (response.status === 201) {
           this.anadirMensaje("Cliente añadido correctamente");
-          this.fetchMenciones();
-        } 
+          await this.fetchClientes();
+          return true;
+        }
+        return false;
       } catch (error) {
         this.anadirMensaje("Error al añadir el cliente");
         console.error("Error al añadir el cliente:", error);
+        return false;
       }
     },
 
