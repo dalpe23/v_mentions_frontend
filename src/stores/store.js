@@ -1,9 +1,8 @@
 import { defineStore } from 'pinia'
 import axios from "axios";
 
- const SERVER = "http://localhost/api";
-// const SERVER = "https://v-mentions.myp.com.es/Laravel/public/api";
-// https://v-mentions.myp.com.es/Laravel/public/api/menciones
+// const SERVER = "http://localhost/api";
+ const SERVER = "https://v-mentions.myp.com.es/Laravel/public/api";
 
 export const useDataStore = defineStore("data", {
   state() {
@@ -280,6 +279,62 @@ export const useDataStore = defineStore("data", {
       }
     },
 
-    
+    async guardarAlertEmail(id, email) {
+      try {
+        const headers = this.getAuthHeaders();
+        if (!headers) return;
+
+        const response = await axios.patch(`${SERVER}/alertas/${id}`, {
+          email: email,
+        }, headers);
+
+        if (response.status === 200) {
+          this.anadirMensaje("Email guardado correctamente");
+          this.fetchAlertas();
+        } 
+      } catch (error) {
+        this.anadirMensaje("Error al guardar el email");
+        console.error("Error al guardar el email:", error);
+      }
+    }
+    ,
+
+    async addAlertEmail(email) {
+      try {
+        const headers = this.getAuthHeaders();
+        if (!headers) return;
+
+        const response = await axios.post(`${SERVER}/alert-emails`, { email }, headers);
+        if (response.status === 201) {
+          this.anadirMensaje("Email añadido correctamente");
+        }
+        return response.data;
+      } catch (error) {
+        this.anadirMensaje("Error al añadir el email");
+        throw error;
+      }
+    },
+
+    async fetchAlertEmails() {
+      try {
+        const headers = this.getAuthHeaders();
+        if (!headers) return [];
+        const response = await axios.get(`${SERVER}/alert-emails`, headers);
+        return response.data;
+      } catch (error) {
+        this.anadirMensaje("Error al cargar los correos de alerta");
+        return [];
+      }
+    },
+    async deleteAlertEmail(id) {
+      try {
+        const headers = this.getAuthHeaders();
+        if (!headers) return;
+        await axios.delete(`${SERVER}/alert-emails/${id}`, headers);
+        this.anadirMensaje("Correo eliminado correctamente");
+      } catch (error) {
+        this.anadirMensaje("Error al eliminar el correo");
+      }
+    },
   },
 })
