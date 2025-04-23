@@ -13,8 +13,20 @@ export default {
       },
       nuevoEmail: '',
       alertEmails: [],
-      cargandoEmails: false,
     }
+  },
+  onBeforeMount() {
+    this.inicializarVista();
+  },
+  watch: {
+    $route() {
+      this.inicializarVista();
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.inicializarVista();
+    });
   },
   methods: {
     ...mapActions(useDataStore, [
@@ -38,9 +50,7 @@ export default {
       await this.cargarAlertEmails()
     },
     async cargarAlertEmails() {
-      this.cargandoEmails = true
       this.alertEmails = await this.fetchAlertEmails()
-      this.cargandoEmails = false
     },
     async eliminarAlertEmail(id) {
       if (confirm('¿Seguro que quieres eliminar este correo?')) {
@@ -48,17 +58,17 @@ export default {
         await this.cargarAlertEmails()
       }
     },
-  },
-  async mounted() {
-    const usuarioData = JSON.parse(localStorage.getItem('usuario'))
-    if (usuarioData) {
-      this.usuario = {
-        nombre: usuarioData.name,
-        email: usuarioData.email,
-        rol: usuarioData.rol,
+    async inicializarVista() {
+      const usuarioData = JSON.parse(localStorage.getItem('usuario'));
+      if (usuarioData) {
+        this.usuario = {
+          nombre: usuarioData.name,
+          email: usuarioData.email,
+          rol: usuarioData.rol,
+        };
       }
-    }
-    await this.cargarAlertEmails()
+      await this.cargarAlertEmails();
+    },
   },
 }
 </script>
@@ -70,8 +80,8 @@ export default {
       <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
       <p><strong>Email:</strong> {{ usuario.email }}</p>
       <p><strong>Rol:</strong> {{ usuario.rol }}</p>
-      <div class="alert-email-form">
         <div class="alert-emails-list">
+          <div class="alert-email-form">
           <h3>Correos de alerta</h3>
           <ul v-if="alertEmails.length">
             <li v-for="email in alertEmails" :key="email.id">
