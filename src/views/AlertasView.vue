@@ -38,8 +38,12 @@ export default {
             <p class="letrasAlerta" style="font-size: 15px;"><strong>Resuelta:</strong> <span :style="{ color: alerta.resuelta ? 'green' : 'red', fontWeight: 'bold' }">{{ alerta.resuelta ? 'Sí' : 'No' }}</span></p>
           </div>
           <div class="alerta-buttons">
-            <button :disabled="alerta.resuelta" class="btn-view" @click="marcarResuelta(alerta.id)">Marcar como resuelta</button>
-            <button class="btn-remove" @click="eliminar(alerta.id)">Borrar Alerta</button>
+            <button :disabled="alerta.resuelta" class="btn-view" @click="marcarResuelta(alerta.id)">
+              <i class="bi bi-check2-circle"></i> Marcar como resuelta
+            </button>
+            <button class="btn-remove" @click="eliminar(alerta.id)">
+              <i class="bi bi-trash"></i> Borrar Alerta
+            </button>
           </div>
         </li>
       </ul>
@@ -131,16 +135,17 @@ button {
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s;
+  font-weight: 600;
 }
 
 .btn-remove {
-  background-color: #dc3545;
+  background-color: #f44336;
   font-size: 20px;
   color: white;
 }
 
 .btn-remove:hover {
-  background-color: #c82333;
+  background-color: #d32f2f;
 }
 
 .btn-view {
@@ -163,4 +168,45 @@ button:disabled {
   font-size: 3rem;
   color: #555;
 }
+
+@media (max-width: 1024px) {
+.alertas-content {
+  border-right: 2rem;        
+
+}
+
+  .alertas-content h2 {
+    font-size: 2rem;
+  }
+
+  .alerta-info h3 {
+    font-size: 1rem;
+  }
+
+  .alerta-info p {
+    font-size: 0.9rem;
+  }
+
+  .alerta-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+
+  button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+  }
+
+  .btn-view, .btn-remove {
+    width: 100%;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .letrasAlerta {
+    font-size: 1.4rem;
+  }
+}
+
 </style>

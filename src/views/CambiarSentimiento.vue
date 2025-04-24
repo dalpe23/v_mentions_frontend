@@ -116,4 +116,21 @@
     border-radius: 5px;
     cursor: pointer;
   }
+
+@media (max-width: 1024px) {
+  .cambiar-sentimiento {
+    padding: 0.5rem;
+    width: 100vw;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  select, button {
+    font-size: 0.95rem;
+    padding: 0.6rem;
+  }
+  h1, h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.7rem;
+  }
+}
   </style>

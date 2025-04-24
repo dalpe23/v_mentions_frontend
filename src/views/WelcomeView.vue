@@ -17,12 +17,9 @@ export default {
 
 <template>
   <div class="admin-panel">
-    <div class="content-container">
-      <div class="image-container">
-        <img src="/playa.jpg" alt="Playa de Valencia" class="playa-image" />
-        <h1>¡Bienvenido al portal de alertas!</h1>
-      </div>
-
+    <div class="welcome-vertical">
+      <img src="/playa.jpg" alt="Playa de Valencia" class="playa-image" />
+      <h1>¡Bienvenido al portal de alertas!</h1>
       <div class="cards-container">
         <div class="card">
           <span class="icon">🚨</span>
@@ -72,42 +69,39 @@ export default {
 }
 
 .content-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  height: 100%;
-  width: 100%;
+  display: none;
 }
 
-.image-container {
-  flex: 1;
+.welcome-vertical {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  width: 100%;
+  gap: 1.5rem;
 }
 
 .playa-image {
   width: 100%;
-  max-width: 800px; 
+  max-width: 800px;
   height: auto;
-  animation: slideInFromTop 1.5s ease-out; 
+  animation: slideInFromTop 1.5s ease-out;
   margin-bottom: 1rem;
+  border-radius: 1rem;
 }
 
 h1 {
   font-size: 2.5rem;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   color: #222;
+  text-align: center;
 }
 
 .cards-container {
-  flex: 1;
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
-  justify-content: flex-start;
+  justify-content: center;
+  width: 100%;
 }
 
 .card {
@@ -116,6 +110,7 @@ h1 {
   padding: 1.5rem;
   border-radius: 1rem;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
 .icon {
@@ -133,5 +128,59 @@ h1 {
 .card h2 {
   font-size: 2rem;
   color: #111;
+}
+
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 90vh;
+  width: 80vw;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  padding: 2rem;
+}
+
+.welcome-title {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+.welcome-text {
+  font-size: 1.2rem;
+  color: #555;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 1024px) {
+  .welcome-vertical {
+    gap: 0.7rem;
+  }
+  .cards-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 0.7rem;
+    width: 100%;
+    max-width: 100vw;
+    justify-items: center;
+    align-items: center;
+  }
+  .card {
+    width: 44vw;
+    max-width: 180px;
+    min-width: 120px;
+    padding: 0.7rem;
+    margin: 0;
+  }
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
 }
 </style>

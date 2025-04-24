@@ -130,12 +130,16 @@ export default {
             <option value="leida">Revisadas</option>
           </select>
         </div>
-        <div class="botones-filtros" style="display: flex; gap: 1rem;">
-          <button class="limpiarFiltro" @click="limpiarFiltros"><strong>Limpiar filtros</strong></button>
-          <button class="exportarFiltro" @click="exportarExcel"><strong>Exportar menciones</strong></button>
-        </div>
       </section>
 
+      <div class="botones-filtros" style="display: flex; gap: 1rem;">
+        <button class="limpiarFiltro" @click="limpiarFiltros">
+          <i class="bi bi-eraser"></i> <strong>Limpiar filtros</strong>
+        </button>
+        <button class="exportarFiltro" @click="exportarExcel">
+          <i class="bi bi-file-earmark-arrow-down"></i> <strong>Exportar</strong>
+        </button>
+      </div>
       <ul v-if="mencionesFiltradas.length > 0">
         <li v-for="mencion in mencionesFiltradas" :key="mencion.id" :class="['mencion-item', { 'leida': mencion.leida }]">
           <a :href="mencion.enlace" target="_blank" class="mencion-link" @click="marcarMencionComoLeida(mencion.id)">
@@ -150,8 +154,12 @@ export default {
             <span v-else-if="mencion.sentimiento === 'negativo'" title="Sentimiento negativo">👎</span>
             <span v-else title="Sentimiento neutral">😐</span>
           </div>
-          <button class="mencion-btn" @click="marcarMencioneComoNoLeida(mencion.id)">Marcar como no leída</button>
-          <button class="mencion-btn-cambiar" @click="$router.push('/menciones/' + mencion.id)">Cambiar Valoración Manualmente</button>
+          <button class="mencion-btn" @click="marcarMencioneComoNoLeida(mencion.id)">
+            <i class="bi bi-envelope-open"></i> Marcar como no leída
+          </button>
+          <button class="mencion-btn-cambiar" @click="$router.push('/menciones/' + mencion.id)">
+            <i class="bi bi-pencil-square"></i> Editar Valoración
+          </button>
         </li>
       </ul>
 
@@ -183,13 +191,15 @@ html, body, #app {
   background-color: #d32f2f;
 }
 
-.exportarFiltro{
+.exportarFiltro {
   background-color: #4CAF50;
   color: white;
   border: none;
   font-size: 20px;
+  font-weight: 600;
   border-radius: 5px;
-  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .exportarFiltro:hover{
@@ -198,8 +208,8 @@ html, body, #app {
 
 .filtros {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
   justify-content: center;
   align-items: center;
 }
@@ -300,12 +310,146 @@ ul {
 
 .sentimiento-icon {
   position: absolute;
-  top: 6rem;
-  right: 6rem;
-  font-size: 2rem;
+  bottom: 1.2rem;
+  right: 1.2rem;
+  font-size: 3rem;
 }
 
 .mencion-item.leida {
   background-color: #e0ffe0;
 }
+
+button{
+  font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+  .app-container {
+    padding: 0;
+  }
+  .main-content {
+    padding: 0.5rem;
+    box-shadow: none;
+  }
+  .main-content h2 {
+    font-size: 2rem;
+  }
+  .filtros {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+    padding: 0.5rem 0;
+  }
+  .filtros input[type="date"],
+  .filtros select {
+    width: 100%;
+    min-width: 120px;
+    font-size: 0.98rem;
+    padding: 0.7rem;
+    margin-bottom: 0.3rem;
+  }
+  .botones-filtros {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  button,
+  .btn-submit,
+  .btn-register,
+  .btn-remove,
+  .btn-view {
+    font-size: 1.1rem !important;
+  }
+
+  .exportarFiltro,
+  .limpiarFiltro,
+  .mencion-btn-cambiar {
+    font-size: 20px;
+    font-weight: 600;
+
+  }
+
+  .exportarFiltro,
+  .limpiarFiltro {
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    padding: 0.9rem 0.5rem;
+    border-radius: 8px;
+    width: 100%;
+    margin: 0.5rem 0 0;
+    box-sizing: border-box;
+  }
+
+  .mencion-btn,
+  .mencion-btn-cambiar {
+    margin: 0.5rem 0 0.5rem 0;
+    margin-left: 1rem;
+    font-size: 1.1rem;
+    padding: 0.9rem 0.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+  
+  .exportarFiltro {
+    font-size: 1.1rem;
+    padding: 0.9rem 0.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    width: 100%;
+    margin: 0.5rem 0 0.5rem 0;
+  }
+  .mencion-btn {
+    margin: 0.5rem 0 0.5rem 0;
+    margin-left: 1rem;
+    font-size: 1.1rem;
+    padding: 0.9rem 0.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+  .mencion-btn-cambiar{
+    margin: 0 0 1rem 0;
+    margin-left: 1rem;
+    font-size: 1.1rem;
+    padding: 0.9rem 0.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+
+  .sentimiento-icon {
+    position: absolute;
+    bottom: 0.7rem;
+    right: 0.7rem;
+    font-size: 2.5rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  .filtros {
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    justify-content: center;
+    align-items: flex-end;
+  }
+  .botones-filtros {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 0.7rem;
+    justify-content: center;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .limpiarFiltro,
+  .exportarFiltro {
+    font-size: 1rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+    width: 180px;
+    min-width: 120px;
+    max-width: 220px;
+    box-sizing: border-box;
+    margin: 0;
+  }
+}
+
 </style>

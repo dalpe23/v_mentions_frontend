@@ -16,17 +16,17 @@ export default {
     }
   },
   onBeforeMount() {
-    this.inicializarVista();
+    this.inicializarVista()
   },
   watch: {
     $route() {
-      this.inicializarVista();
-    }
+      this.inicializarVista()
+    },
   },
   beforeRouteEnter(to, from, next) {
-    next(vm => {
-      vm.inicializarVista();
-    });
+    next((vm) => {
+      vm.inicializarVista()
+    })
   },
   methods: {
     ...mapActions(useDataStore, [
@@ -53,21 +53,19 @@ export default {
       this.alertEmails = await this.fetchAlertEmails()
     },
     async eliminarAlertEmail(id) {
-      if (confirm('¿Seguro que quieres eliminar este correo?')) {
         await this.deleteAlertEmail(id)
         await this.cargarAlertEmails()
-      }
     },
     async inicializarVista() {
-      const usuarioData = JSON.parse(localStorage.getItem('usuario'));
+      const usuarioData = JSON.parse(localStorage.getItem('usuario'))
       if (usuarioData) {
         this.usuario = {
           nombre: usuarioData.name,
           email: usuarioData.email,
           rol: usuarioData.rol,
-        };
+        }
       }
-      await this.cargarAlertEmails();
+      await this.cargarAlertEmails()
     },
   },
 }
@@ -80,30 +78,36 @@ export default {
       <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
       <p><strong>Email:</strong> {{ usuario.email }}</p>
       <p><strong>Rol:</strong> {{ usuario.rol }}</p>
-        <div class="alert-emails-list">
-          <div class="alert-email-form">
+      <div class="alert-emails-list">
+        <div class="alert-email-form">
           <h3>Correos de alerta</h3>
           <ul v-if="alertEmails.length">
             <li v-for="email in alertEmails" :key="email.id">
               {{ email.email }}
-              <button @click="eliminarAlertEmail(email.id)">Eliminar</button>
+              <button class="btn-eliminar" @click="eliminarAlertEmail(email.id)">
+                <i class="bi bi-trash"></i>
+              </button>
             </li>
           </ul>
           <div v-else class="no-alert-emails">No hay correos de alerta</div>
           <br />
           <h3>Añadir correo para alertas</h3>
           <input type="email" v-model="nuevoEmail" placeholder="Correo electrónico" />
-          <button class="btn-alert" @click="guardarEmail">Guardar</button>
+          <button class="btn-alert" @click="guardarEmail">
+            <i class="bi bi-save"></i> Guardar
+          </button>
         </div>
       </div>
       <p></p>
     </div>
-    <div class="usuario-actions">
+    <div class="usuario-info usuario-actions">
       <!-- <button v-if="usuario.rol === 'admin'" class="btn-register" @click="$router.push('/anadir-cliente')">Dar de alta Usuario</button> -->
       <button v-if="usuario.rol === 'admin'" class="btn-ver" @click="$router.push('/clientes')">
-        Admin User Panel
+        <i class="bi bi-people"></i> Admin User Panel
       </button>
-      <button class="btn-logout" @click="logout">Cerrar Sesión</button>
+      <button class="btn-logout" @click="logout">
+        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+      </button>
     </div>
   </div>
 </template>
@@ -141,10 +145,17 @@ export default {
 
 .usuario-actions {
   display: flex;
+  flex-direction: row;
   justify-content: center;
+  align-items: center;
   gap: 1.5rem;
   width: 100%;
   max-width: 600px;
+}
+
+.usuario-actions button {
+  width: auto;
+  min-width: 160px;
 }
 
 button {
@@ -155,6 +166,7 @@ button {
   cursor: pointer;
   transition: background-color 0.3s;
   width: 100%;
+  font-weight: 600;
 }
 
 .btn-register {
@@ -233,7 +245,7 @@ button {
   border-radius: 8px;
   padding: 0.6rem 1.5rem;
   font-size: 1.1rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   box-shadow: 0 1px 4px rgba(60, 0, 120, 0.08);
   transition:
@@ -312,5 +324,74 @@ button {
 .alert-emails-list button:hover {
   background-color: #c82333;
   box-shadow: 0 2px 8px rgba(255, 77, 79, 0.18);
+}
+
+@media (max-width: 1024px) {
+  .usuario-container {
+    margin: 4vw auto;
+    width: 92vw;
+    max-width: 400px;
+    min-width: 0;
+    padding: 1rem 0.5rem;
+    border-radius: 12px;
+    background: #fff;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .alert-emails-list,
+  .alert-email-form {
+    max-width: 100%;
+    width: 100%;
+    min-width: 0;
+    margin: 1rem 0 0 0;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(60, 60, 120, 0.07);
+  }
+  .alert-emails-list li {
+    max-width: 100%;
+    min-width: 0;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    font-size: 1rem;
+    padding: 0.7rem 0.5rem;
+    margin-left: auto;
+    margin-right: auto;
+    width: 98%;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(60, 60, 120, 0.07);
+  }
+  .btn-alert {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .btn-submit {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .btn-register,
+  .btn-logout,
+  .btn-ver {
+    padding: 1.2rem 0;
+    font-size: 1.3rem;
+    font-weight: 700;
+    width: 100%;
+    min-width: unset;
+    margin-bottom: 1rem;
+  }
+  .usuario-actions {
+    flex-direction: column;
+    gap: 0;
+    align-items: stretch;
+  }
+  .usuario-actions button:last-child {
+    margin-bottom: 0;
+  }
 }
 </style>

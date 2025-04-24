@@ -13,51 +13,81 @@ export default {
     RouterView
   },
 
+  data() {
+    return {
+      mostrarSidebar: false,
+      windowWidth: window.innerWidth
+    };
+  },
+
   computed: {
     route() {
       return this.$route;
+    },
+    screenIsWide() {
+      return this.windowWidth > 768;
     }
   },
 
   methods: {
     ...mapActions(useDataStore, ["fetchAlertas", "fetchMenciones"]),
+    toggleSidebar() {
+      this.mostrarSidebar = !this.mostrarSidebar;
+    },
+    updateWidth() {
+      this.windowWidth = window.innerWidth;
+      if (this.screenIsWide) this.mostrarSidebar = false;
+    }
   },
 
   async mounted() {
     await this.fetchAlertas();
     await this.fetchMenciones();
+    window.addEventListener('resize', this.updateWidth);
+  },
+
+  beforeUnmount() {
+    window.removeEventListener('resize', this.updateWidth);
   }
 };
 </script>
 
+
 <template>
   <div class="app-container" :class="{ 'no-sidebar': route.path === '/' }">
- 
+    
+    <button class="hamburger" @click="toggleSidebar" v-if="route.path !== '/' && !screenIsWide && !mostrarSidebar">
+      <i class="bi bi-list"></i>
+    </button>
 
-    <aside v-if="route.path !== '/'" class="sidebar">
-      <RouterLink to="/welcome">
+    <!-- Overlay para cerrar el sidebar en móvil -->
+    <div class="sidebar-overlay" v-if="mostrarSidebar && !screenIsWide" @click="toggleSidebar"></div>
+
+    <aside :class="{ sidebar: true, 'sidebar-visible': mostrarSidebar || screenIsWide }" v-if="route.path !== '/'">
+      <RouterLink to="/welcome" @click="screenIsWide ? null : mostrarSidebar = false">
         <img src="/VMentions.png" alt="logo" class="logo" />
       </RouterLink>
-      <RouterLink to="/menciones">
+      <RouterLink to="/menciones" @click="screenIsWide ? null : mostrarSidebar = false">
         <img src="/mencionar.png" alt="Menciones" class="sidebar-icon" /> Menciones
       </RouterLink>
-      <RouterLink to="/alertas">
+      <RouterLink to="/alertas" @click="screenIsWide ? null : mostrarSidebar = false">
         <img src="/agregar-alerta.png" alt="Alertas" class="sidebar-icon" /> Alertas
       </RouterLink>
-      <RouterLink to="/nueva-alerta">
+      <RouterLink to="/nueva-alerta" @click="screenIsWide ? null : mostrarSidebar = false">
         <img src="/anadir-alarma.png" alt="Nueva Alerta" class="sidebar-icon" /> Nueva Alerta
       </RouterLink>
-      <RouterLink to="/usuario">
+      <RouterLink to="/usuario" @click="screenIsWide ? null : mostrarSidebar = false">
         <img src="/avatar.png" alt="Usuario" class="sidebar-icon" /> Usuario
       </RouterLink>
     </aside>
 
     <main class="main-content">  
-       <app-messages />
+      <app-messages />
       <RouterView />
     </main>
   </div>
 </template>
+
 
 <style scoped>
 * {
@@ -65,7 +95,9 @@ export default {
   font-weight: 400;
 }
 
-html, body, #app {
+html,
+body,
+#app {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -89,8 +121,8 @@ html, body, #app {
 
 .sidebar {
   flex-shrink: 0;
-  height: auto; 
-  width: 300px; 
+  height: auto;
+  width: 300px;
   background-color: #2d2f33;
   color: white;
   padding: 1rem;
@@ -113,7 +145,9 @@ html, body, #app {
   text-decoration: none;
   font-size: 20px;
   color: white;
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .sidebar a:hover {
@@ -124,7 +158,7 @@ html, body, #app {
 
 .sidebar a.router-link-active {
   font-weight: bold;
-  }
+}
 
 .sidebar-icon {
   margin-left: 15px;
@@ -139,5 +173,69 @@ html, body, #app {
 .no-sidebar .main-content {
   width: 100vw;
   height: 100vh;
+}
+
+.hamburger {
+  display: block;
+  position: absolute;
+  top: 30px; 
+  left: 24px; 
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: #333;
+  z-index: 1001;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    width: 180px;
+    font-size: 16px;
+    padding: 2.5rem 0.5rem 1.2rem 0.7rem; 
+    margin-top: env(safe-area-inset-top, 20px); 
+    box-sizing: border-box;
+  }
+
+  .logo {
+    width: 80%;
+    height: auto;
+    margin-left: 0.5rem;
+  }
+
+  .sidebar a {
+    font-size: 16px;
+    gap: 10px;
+    padding: 4px 0;
+  }
+
+  .sidebar-visible {
+    transform: translateX(0) !important;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .main-content {
+    padding: 1rem;
+    padding-top: 3rem;
+  }
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.3);
+  z-index: 999;
 }
 </style>

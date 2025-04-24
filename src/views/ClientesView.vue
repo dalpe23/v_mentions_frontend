@@ -1,31 +1,29 @@
 <script>
-import { mapActions, mapState } from 'pinia';
-import { useDataStore } from '@/stores/store';
+import { mapActions, mapState } from 'pinia'
+import { useDataStore } from '@/stores/store'
 
-export default{
-    name: "Ver Clientes",
+export default {
+  name: 'Ver Clientes',
 
-    data() {
-        return {
-            clientes: []
-        }
-    },
-
-    methods: {
-        ...mapActions(useDataStore, ["fetchClientes", "deleteCliente"]),
-        async eliminarCliente(id) {
-            await this.deleteCliente(id);
-            this.clientes = await this.fetchClientes();
-        }
-    },
-
-    async mounted() {
-        this.clientes = await this.fetchClientes();
-    },
-
-    computed: {
-        
+  data() {
+    return {
+      clientes: [],
     }
+  },
+
+  methods: {
+    ...mapActions(useDataStore, ['fetchClientes', 'deleteCliente']),
+    async eliminarCliente(id) {
+      await this.deleteCliente(id)
+      this.clientes = await this.fetchClientes()
+    },
+  },
+
+  async mounted() {
+    this.clientes = await this.fetchClientes()
+  },
+
+  computed: {},
 }
 </script>
 
@@ -34,19 +32,25 @@ export default{
     <div class="clientes-card">
       <h1 class="clientes-title">Listado de Clientes</h1>
       <ul class="clientes-list">
-        <button class="btn-register" @click="$router.push('/anadir-cliente')">Dar de alta Usuario</button>
+        <button class="btn-register" @click="$router.push('/anadir-cliente')">
+          <i class="bi bi-person-plus"></i> Dar de alta Usuario
+        </button>
         <li v-for="cliente in clientes" :key="cliente.id" class="cliente-item">
           <div class="cliente-info">
             <p><strong>Nombre:</strong> {{ cliente.name }}</p>
             <p><strong>Email:</strong> {{ cliente.email }}</p>
             <p><strong>Rol:</strong> {{ cliente.rol }}</p>
           </div>
-          <button class="delete-button" @click="eliminarCliente(cliente.id)">Eliminar Usuario</button>
+          <button class="delete-button" @click="eliminarCliente(cliente.id)">
+            <i class="bi bi-trash"></i>
+          </button>
         </li>
         <div>
-        <p v-if="!clientes.length" style="text-align: center; font-size: 20px;">Cargando clientes...</p>
-      </div>
-      </ul>    
+          <p v-if="!clientes.length" style="text-align: center; font-size: 20px">
+            Cargando clientes...
+          </p>
+        </div>
+      </ul>
     </div>
   </div>
 </template>
@@ -70,13 +74,16 @@ export default{
   font-size: 1.2rem;
   cursor: pointer;
   transition: background-color 0.3s;
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .btn-register:hover {
   background-color: #218838;
 }
 
+button{
+  font-weight: 600;
+} 
 
 .clientes-card {
   background-color: #ffffff;
@@ -125,10 +132,36 @@ export default{
   cursor: pointer;
   font-size: 1.2rem;
   transition: background-color 0.3s;
-
 }
 
 .delete-button:hover {
   background-color: #e60000;
+}
+
+@media (max-width: 1024px) {
+  .clientes-container {
+    padding: 0.5rem;
+  }
+  .clientes-card {
+    padding: 0.5rem;
+    max-width: 100vw;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .cliente-item {
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 0.95rem;
+    padding: 0.7rem;
+  }
+  .btn-register,
+  .delete-button {
+    font-size: 0.95rem;
+    padding: 0.6rem 0.8rem;
+  }
+  .clientes-title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
 }
 </style>

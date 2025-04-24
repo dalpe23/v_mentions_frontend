@@ -74,7 +74,9 @@ export default {
         <ErrorMessage name="email" class="form-error" />
       </div>
 
-      <button type="submit" class="btn-submit">Añadir Cliente</button>
+      <button type="submit" class="btn-submit">
+        <i class="bi bi-send"></i> Añadir Cliente
+      </button>
     </Form>
   </div>
 </template>
@@ -138,6 +140,8 @@ export default {
   cursor: pointer;
   margin-top: 1.5rem;
   transition: background-color 0.3s;
+  font-weight: 600;
+
 }
 
 .btn-submit:hover {
