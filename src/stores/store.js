@@ -218,7 +218,7 @@ export const useDataStore = defineStore("data", {
       }
     },
 
-    async AnadirCliente(nombre, correo) {
+    async AnadirCliente(nombre, correo, contrasena) {
       try {
         const headers = this.getAuthHeaders();
         if (!headers) return false;
@@ -226,6 +226,7 @@ export const useDataStore = defineStore("data", {
         const response = await axios.post(`${SERVER}/clientes`, {
           name: nombre,
           email: correo,
+          password: contrasena,
         }, headers);
 
         if (response.status === 201) {

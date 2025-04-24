@@ -20,6 +20,7 @@ export default {
       form: {
         name: "",
         email: "",
+        password: "",
       },
       schema: yup.object({
         name: yup
@@ -31,6 +32,10 @@ export default {
           .string()
           .email("Debe ser un correo electrónico válido")
           .required("El correo electrónico es obligatorio"),
+        password: yup
+          .string()
+          .min(6, "La contraseña debe tener al menos 6 caracteres")
+          .required("La contraseña es obligatoria"),
       }),
     };
   },
@@ -45,8 +50,8 @@ export default {
   methods: {
     async handleSubmit(values) {
       try {
-        const { name, email } = values;
-        const resultado = await this.AnadirCliente(name, email);
+        const { name, email, password } = values;
+        const resultado = await this.AnadirCliente(name, email, password);
         if (resultado === true) {
           this.$router.push("/clientes");
         }
@@ -72,6 +77,12 @@ export default {
         <label for="email">Correo Electrónico</label>
         <Field name="email" type="email" v-model="form.email" class="form-input" />
         <ErrorMessage name="email" class="form-error" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <Field name="password" type="password" v-model="form.password" class="form-input" />
+        <ErrorMessage name="password" class="form-error" />
       </div>
 
       <button type="submit" class="btn-submit">
