@@ -259,13 +259,6 @@ html, body, #app {
   background-color: #da8b1d;
 }
 
-.app-container {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  overflow-x: hidden;
-}
-
 .main-content {
   flex-grow: 1;
   background-color: #fff;

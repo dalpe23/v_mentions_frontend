@@ -104,6 +104,21 @@ body,
   overflow: hidden;
 }
 
+.sidebar {
+  flex-shrink: 0;
+  height: 100vh;
+  width: 300px;
+  background-color: #2d2f33;
+  color: white;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
 .app-container {
   display: flex;
   min-height: 100vh;
@@ -115,19 +130,9 @@ body,
   padding: 2rem;
   overflow-y: auto;
   overflow-x: auto;
-  height: 100%;
+  height: 100vh;
   width: 100%;
-}
-
-.sidebar {
-  flex-shrink: 0;
-  height: auto;
-  width: 300px;
-  background-color: #2d2f33;
-  color: white;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
+  margin-left: 300px;
 }
 
 .logo {
@@ -189,43 +194,44 @@ body,
 
 @media (max-width: 768px) {
   .sidebar {
-    position: fixed;
+    position: absolute;
     left: 0;
     top: 0;
     height: 100vh;
     z-index: 1000;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
     width: 180px;
     font-size: 16px;
     padding: 2.5rem 0.5rem 1.2rem 0.7rem; 
     margin-top: env(safe-area-inset-top, 20px); 
     box-sizing: border-box;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.3s cubic-bezier(0.4,0,0.2,1);
+    opacity: 0;
+    pointer-events: none;
   }
-
-  .logo {
-    width: 80%;
-    height: auto;
-    margin-left: 0.5rem;
-  }
-
-  .sidebar a {
-    font-size: 16px;
-    gap: 10px;
-    padding: 4px 0;
-  }
-
-  .sidebar-visible {
+  .sidebar.sidebar-visible {
+    display: flex;
     transform: translateX(0) !important;
+    opacity: 1;
+    pointer-events: auto;
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.3s cubic-bezier(0.4,0,0.2,1);
   }
-
-  .hamburger {
-    display: block;
-  }
-
   .main-content {
     padding: 1rem;
     padding-top: 3rem;
+    margin-left: 0;
+  }
+
+  .sidebar .logo {
+    width: 95%;
+    max-width: 150px;
+    margin-left: 0.2rem;
+    margin-bottom: 1.5rem;
+  }
+  .sidebar a {
+    font-size: 15px;
+    gap: 8px;
+    padding: 5px 0;
   }
 }
 

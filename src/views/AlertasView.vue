@@ -70,13 +70,6 @@ html, body, #app {
   min-height: 90vh;
 }
 
-.app-container {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  overflow-x: hidden;
-}
-
 .alertas-content {
   background-color: #fff;
   padding: 2rem;
