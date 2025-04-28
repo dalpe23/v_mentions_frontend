@@ -74,12 +74,14 @@ export default {
 
 .login-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: center; 
   align-items: center;
-  height: 100%;
-  width: 100%;
-  background-color: #f5f5f5;
-  margin: 0;
+  height: 100vh; 
+  width: 100vw; 
+  background-color: #ffffff;
+  box-sizing: border-box;
+  margin: 0 auto; 
 }
 
 .login-card {
@@ -150,5 +152,16 @@ export default {
   width: 60%;
   height: auto;
   margin-bottom: 1rem;
+}
+</style>
+
+<style>
+.no-sidebar .main-content,
+.main-content.full-width {
+  margin-left: 0 !important;
+  width: 100vw !important;
+  max-width: 100vw;
+  padding: 0;
+  height: 100vh;
 }
 </style>

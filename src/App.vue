@@ -60,7 +60,6 @@ export default {
       <i class="bi bi-list"></i>
     </button>
 
-    <!-- Overlay para cerrar el sidebar en móvil -->
     <div class="sidebar-overlay" v-if="mostrarSidebar && !screenIsWide" @click="toggleSidebar"></div>
 
     <aside :class="{ sidebar: true, 'sidebar-visible': mostrarSidebar || screenIsWide }" v-if="route.path !== '/'">

@@ -18,7 +18,7 @@ export default {
 <template>
   <div class="admin-panel">
     <div class="welcome-vertical">
-      <img src="/playa.jpg" alt="Playa de Valencia" class="playa-image" />
+      <img src="/VMentionsBlack.png" alt="Playa de Valencia" class="playa-image" />
       <h1>¡Bienvenido al portal de alertas!</h1>
       <div class="cards-container">
         <div class="card">
@@ -60,12 +60,15 @@ export default {
 }
 
 .admin-panel {
-  width: 90%;
+  width: 100%;
   height: 100%;
   margin: auto;
   padding: 2rem;
   text-align: center;
-  
+  background-image: url('/fondo.png');
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .content-container {
@@ -159,6 +162,10 @@ h1 {
 }
 
 @media (max-width: 1024px) {
+  .admin-panel {
+    background-image: url('/fondo-movil.png');
+
+  }
   .welcome-vertical {
     gap: 0.7rem;
   }
