@@ -12,11 +12,23 @@ export default {
         alerta: '',
         valoracion: '',
         estado: '',
+        pais: '',
       }
     };
   },
   computed: {
     ...mapState(useDataStore, ["menciones", "alertas"]),
+    paisesDisponibles() {
+      // Extrae los países únicos del campo fuente (después del guion)
+      const paises = new Set();
+      this.menciones.forEach(m => {
+        if (m.fuente && m.fuente.includes(' - ')) {
+          const pais = m.fuente.split(' - ').pop().trim();
+          if (pais) paises.add(pais);
+        }
+      });
+      return Array.from(paises).sort();
+    },
     mencionesFiltradas() {
       return this.menciones.filter(mencion => {
         const fechaValida = (!this.filtro.fechaDesde || new Date(mencion.fecha) >= new Date(this.filtro.fechaDesde)) &&
@@ -24,8 +36,8 @@ export default {
         const alertaValida = (!this.filtro.alerta || mencion.alerta_id == this.filtro.alerta);
         const valoracionValida = (!this.filtro.valoracion || mencion.sentimiento === this.filtro.valoracion);
         const estadoValido = (!this.filtro.estado || (this.filtro.estado === 'leida' && mencion.leida) || (this.filtro.estado === 'no_leida' && !mencion.leida));
-
-        return fechaValida && alertaValida && valoracionValida && estadoValido;
+        const paisValido = (!this.filtro.pais || (mencion.fuente && mencion.fuente.endsWith(' - ' + this.filtro.pais)));
+        return fechaValida && alertaValida && valoracionValida && estadoValido && paisValido;
       });
     },
   },
@@ -54,6 +66,7 @@ export default {
         alerta: '',
         valoracion: '',
         estado: '',
+        pais: '',
       };
       this.aplicarFiltros();
     },
@@ -128,6 +141,13 @@ export default {
             <option value="">Todos los estados</option>
             <option value="no_leida">Nuevas</option>
             <option value="leida">Revisadas</option>
+          </select>
+        </div>
+        <div>
+          <label><strong>País:</strong></label>
+          <select v-model="filtro.pais">
+            <option value="">Todos los países</option>
+            <option v-for="pais in paisesDisponibles" :key="pais" :value="pais">{{ pais }}</option>
           </select>
         </div>
       </section>
