@@ -8,6 +8,7 @@ import UsuarioView from '@/views/UsuarioView.vue'
 import AnadirCliente from '@/views/AnadirCliente.vue'
 import ClientesView from '@/views/ClientesView.vue'
 import CambiarSentimiento from '@/views/CambiarSentimiento.vue'
+import AnadirAlertaForm from '@/views/AnadirAlertaForm.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -40,7 +41,7 @@ const router = createRouter({
     },
     {
       path: '/nueva-alerta',
-      name: 'anadir-alerta',
+      name: 'nueva-alerta',
       component: AnadirAlerta,
     },
     {
@@ -63,6 +64,11 @@ const router = createRouter({
       name: 'menciones-id',
       component: CambiarSentimiento,
       props: true,
+    },
+    {
+      path: '/anadir-alerta-form',
+      name: 'anadir-alerta',
+      component: AnadirAlertaForm,
     }
   ],
 })

@@ -1,29 +1,35 @@
 <script>
-import { useDataStore } from '@/stores/store';
-import { mapActions, mapState } from 'pinia';
+import { useDataStore } from '@/stores/store'
+import { mapActions, mapState } from 'pinia'
 export default {
-  name: "AlertasView",
+  name: 'AlertasView',
 
   computed: {
-    ...mapState(useDataStore, ["alertas", "getAlertaNombreById"]),
+    ...mapState(useDataStore, ['alertas', 'getAlertaNombreById']),
   },
 
   methods: {
-    ...mapActions(useDataStore, ["fetchAlertas", "marcarAlertaComoResuelta", "deleteAlerta"]),
+    ...mapActions(useDataStore, ['fetchAlertas', 'marcarAlertaComoResuelta', 'deleteAlerta']),
     async eliminar(id) {
-      await this.deleteAlerta(id);
-      this.anadirMensaje("Cliente añadido correctamente");
-      },
+      if (confirm('¿Estás seguro de que quieres eliminar la alerta "' + this.getAlertaNombreById(id) + '" ?')) {
+        await this.deleteAlerta(id)
+        this.anadirMensaje('Alerta eliminada correctamente')
+      }
+      return;
+    },
     async marcarResuelta(id) {
-      await this.marcarAlertaComoResuelta(id);
-      this.anadirMensaje('Alerta "'+ this.getAlertaNombreById(id) + '" marcada como resuelta', success);
+      await this.marcarAlertaComoResuelta(id)
+      this.anadirMensaje(
+        'Alerta "' + this.getAlertaNombreById(id) + '" marcada como resuelta',
+        success,
+      )
     },
   },
 
   async mounted() {
-    //await this.fetchAlertas();
+    await this.fetchAlertas();
   },
-};
+}
 </script>
 
 <template>
@@ -35,7 +41,12 @@ export default {
           <div v-if="alerta.nombre"></div>
           <div class="alerta-info">
             <h3>{{ alerta.nombre }}</h3>
-            <p class="letrasAlerta" style="font-size: 15px;"><strong>Resuelta:</strong> <span :style="{ color: alerta.resuelta ? 'green' : 'red', fontWeight: 'bold' }">{{ alerta.resuelta ? 'Sí' : 'No' }}</span></p>
+            <p class="letrasAlerta" style="font-size: 15px">
+              <strong>Resuelta:</strong>
+              <span :style="{ color: alerta.resuelta ? 'green' : 'red', fontWeight: 'bold' }">{{
+                alerta.resuelta ? 'Sí' : 'No'
+              }}</span>
+            </p>
           </div>
           <div class="alerta-buttons">
             <button :disabled="alerta.resuelta" class="btn-view" @click="marcarResuelta(alerta.id)">
@@ -47,16 +58,22 @@ export default {
           </div>
         </li>
       </ul>
-      <h3 v-else style="color: red; text-align: center; font-size: 20px;">No tienes alertas activas</h3>
+      <h3 v-else style="color: red; text-align: center; font-size: 20px">
+        No tienes alertas activas
+      </h3>
       <div v-else>
-        <p v-if="!alertas.length" style="text-align: center; font-size: 20px;">Cargando alertas...</p>
+        <p v-if="!alertas.length" style="text-align: center; font-size: 20px">
+          Cargando alertas...
+        </p>
       </div>
     </main>
   </div>
 </template>
 
 <style scoped>
-html, body, #app {
+html,
+body,
+#app {
   margin: 0;
   padding: 0;
 }
@@ -83,7 +100,6 @@ html, body, #app {
   margin-bottom: 1.5rem;
   color: #333;
   font-size: 3rem;
-
 }
 
 ul {
@@ -100,7 +116,9 @@ ul {
   padding: 1.5rem;
   background-color: #f9f9f9;
   margin-bottom: 1rem;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .alerta-info h3 {
@@ -152,8 +170,8 @@ button {
 }
 
 button:disabled {
-  background-color: #cccccc; 
-  cursor: not-allowed; 
+  background-color: #cccccc;
+  cursor: not-allowed;
   opacity: 0.6;
 }
 
@@ -163,10 +181,9 @@ button:disabled {
 }
 
 @media (max-width: 1024px) {
-.alertas-content {
-  border-right: 2rem;        
-
-}
+  .alertas-content {
+    border-right: 2rem;
+  }
 
   .alertas-content h2 {
     font-size: 2rem;
@@ -191,7 +208,8 @@ button:disabled {
     font-size: 1rem;
   }
 
-  .btn-view, .btn-remove {
+  .btn-view,
+  .btn-remove {
     width: 100%;
     font-size: 16px;
     font-weight: 600;
@@ -201,5 +219,4 @@ button:disabled {
     font-size: 1.4rem;
   }
 }
-
 </style>

@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import axios from "axios";
 
- const SERVER = "http://localhost/api";
-// const SERVER = "https://v-mentions.myp.com.es/Laravel/public/api";
+// const SERVER = "http://localhost/api";
+ const SERVER = "https://v-mentions.myp.com.es/Laravel/public/api";
 
 export const useDataStore = defineStore("data", {
   state() {
@@ -105,6 +105,7 @@ export const useDataStore = defineStore("data", {
         if (mencion) {
           mencion.leida = true;
         }
+        await this.fetchMenciones();
       } catch (error) {
         this.anadirMensaje("Error al marcar la mención como leída");
         console.error("Error al marcar la mención como leída:", error);
@@ -155,6 +156,30 @@ export const useDataStore = defineStore("data", {
         this.anadirMensaje("Error al crear la alerta.");
         console.error("Error al crear alerta:", error);
         return null;
+      }
+    },
+
+    async AnadirAlertaForm(nombre, url, user_id) {
+      try {
+        const headers = this.getAuthHeaders();
+        if (!headers) return false;
+    
+        const response = await axios.post(`${SERVER}/alertas-form`, {
+          nombre: nombre,
+          url: url,
+          user_id: user_id,
+        }, headers);
+    
+        if (response.status === 201) {
+          this.anadirMensaje("Alerta añadida correctamente");
+          await this.fetchAlertas();
+          return true;
+        }
+        return false;
+      } catch (error) {
+        this.anadirMensaje("Error al añadir la alerta");
+        console.error("Error al añadir la alerta:", error);
+        return false;
       }
     },
 

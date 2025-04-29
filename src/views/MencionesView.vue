@@ -19,7 +19,6 @@ export default {
   computed: {
     ...mapState(useDataStore, ["menciones", "alertas"]),
     paisesDisponibles() {
-      // Extrae los países únicos del campo fuente (después del guion)
       const paises = new Set();
       this.menciones.forEach(m => {
         if (m.fuente && m.fuente.includes(' - ')) {
@@ -161,7 +160,7 @@ export default {
         </button>
       </div>
       <ul v-if="mencionesFiltradas.length > 0">
-        <li v-for="mencion in mencionesFiltradas" :key="mencion.id" :class="['mencion-item', { 'leida': mencion.leida }]">
+        <li v-for="mencion in mencionesFiltradas" :key="mencion.id" :class="['mencion-item', { 'leida': mencion.leida === '1' }]">
           <a :href="mencion.enlace" target="_blank" class="mencion-link" @click="marcarMencionComoLeida(mencion.id)">
             <h3>{{ mencion.titulo }}</h3>
             <p><strong>Descripción:</strong> {{ mencion.descripcion }}</p>

@@ -10,7 +10,8 @@ export default {
     ...mapState(useDataStore, ["totalAlertas", "totalMenciones", "mencionesPositivas", "mencionesNegativas"]),
   },
   async mounted() {
-    //this.fetchMenciones();
+    this.fetchMenciones();
+    this.fetchAlertas();
   },
 };
 </script>

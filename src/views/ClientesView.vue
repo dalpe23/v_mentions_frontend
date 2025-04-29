@@ -14,8 +14,10 @@ export default {
   methods: {
     ...mapActions(useDataStore, ['fetchClientes', 'deleteCliente']),
     async eliminarCliente(id) {
+      if (confirm('¿Estás seguro de que quieres eliminar este cliente?')) {
       await this.deleteCliente(id)
       this.clientes = await this.fetchClientes()
+      }
     },
   },
 
