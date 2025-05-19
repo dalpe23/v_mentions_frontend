@@ -34,7 +34,7 @@ export default {
                             (!this.filtro.fechaHasta || new Date(mencion.fecha) <= new Date(this.filtro.fechaHasta + 'T23:59:59'));
         const alertaValida = (!this.filtro.alerta || mencion.alerta_id == this.filtro.alerta);
         const valoracionValida = (!this.filtro.valoracion || mencion.sentimiento === this.filtro.valoracion);
-        const estadoValido = (!this.filtro.estado || (this.filtro.estado === 'leida' && mencion.leida) || (this.filtro.estado === 'no_leida' && !mencion.leida));
+        const estadoValido = (!this.filtro.estado || (this.filtro.estado === 'leida' && mencion.leida === '1') || (this.filtro.estado === 'no_leida' && mencion.leida !== '1'));
         const paisValido = (!this.filtro.pais || (mencion.fuente && mencion.fuente.endsWith(' - ' + this.filtro.pais)));
         return fechaValida && alertaValida && valoracionValida && estadoValido && paisValido;
       });
