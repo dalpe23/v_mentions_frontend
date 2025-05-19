@@ -43,13 +43,13 @@ export default {
             <h3>{{ alerta.nombre }}</h3>
             <p class="letrasAlerta" style="font-size: 15px">
               <strong>Resuelta:</strong>
-              <span :style="{ color: alerta.resuelta ? 'green' : 'red', fontWeight: 'bold' }">{{
-                alerta.resuelta ? 'Sí' : 'No'
+                <span :style="{ color: alerta.resuelta === '1' ? 'green' : 'red', fontWeight: 'bold' }">{{
+                alerta.resuelta === '1' ? 'Sí' : 'No'
               }}</span>
             </p>
           </div>
           <div class="alerta-buttons">
-            <button :disabled="alerta.resuelta" class="btn-view" @click="marcarResuelta(alerta.id)">
+            <button :disabled="alerta.resuelta === '1'" class="btn-view" @click="marcarResuelta(alerta.id)">
               <i class="bi bi-check2-circle"></i> Marcar como resuelta
             </button>
             <button class="btn-remove" @click="eliminar(alerta.id)">

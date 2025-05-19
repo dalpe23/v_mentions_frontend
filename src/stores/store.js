@@ -209,6 +209,7 @@ export const useDataStore = defineStore("data", {
         if (alerta) {
           alerta.resuelta = true;
         }
+        await this.fetchAlertas();
       } catch (error) {
         this.anadirMensaje("Error al marcar la alerta como resuelta");
         console.error("Error al marcar la alerta como resuelta:", error);
