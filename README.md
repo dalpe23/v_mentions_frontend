@@ -118,7 +118,7 @@ Creado con ❤️ por [dalpe23](https://github.com/dalpe23)
 
 ---
 
-# 🎨 VMentions - Frontend (English)
+# 🧠 VMentions - Frontend (English)
 
 > 🌐 **Modern interface to view and manage mentions.**  
 > Frontend developed in Vue 3 + Vite with responsive design, filters, and export tools.
