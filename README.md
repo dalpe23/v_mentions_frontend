@@ -4,7 +4,7 @@
   <a href="https://tailwindcss.com/"><img alt="TailwindCSS" src="https://img.shields.io/badge/TailwindCSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white"/></a>
 </p>
 
-# 🎨 VMentions - Frontend
+# 🧠 VMentions - Frontend
 
 ![VMentions Logo](VMentionsLogo.png)
 
@@ -98,6 +98,13 @@ npm run build
 ### 🧠 Mis menciones
 ![Menciones](mencionesview.png)
 
+## 🧪 Backend en Laravel
+
+El backend de este proyecto se encuentra en el siguiente repositorio:
+
+👉 [**v_mentions_backend**](https://github.com/dalpe23/v_mentions_backend)
+
+---
 
 ## 📫 Contacto
 
@@ -200,6 +207,13 @@ npm run build
 
 ### 🧠 My mentions
 ![Menciones](mencionesview.png)
+
+## 🧪 Backend in Laravel
+
+The backend of this project can be found in the following repository:
+
+👉 [**v_mentions_backend**](https://github.com/dalpe23/v_mentions_backend)
+
 
 ## 📫 Contact
 
