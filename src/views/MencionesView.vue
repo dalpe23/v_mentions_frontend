@@ -1,9 +1,9 @@
 <script>
-import { useDataStore } from '@/stores/store';
-import { mapActions, mapState } from 'pinia';
+import { useDataStore } from '@/stores/store'
+import { mapActions, mapState } from 'pinia'
 
 export default {
-  name: "MencionesView",
+  name: 'MencionesView',
   data() {
     return {
       filtro: {
@@ -13,51 +13,98 @@ export default {
         valoracion: '',
         estado: '',
         pais: '',
-      }
-    };
+      },
+      paginaActual: this.paginaActual || parseInt(localStorage.getItem('paginaMenciones')) || 1,
+      porPagina: 5,
+    }
+  },
+  async mounted() {
+    this.cargarFiltrosGuardados()
+    await this.fetchAlertas()
+    await this.fetchMenciones()
+  },
+  watch: {
+    filtro: {
+      deep: true,
+      handler() {
+        localStorage.setItem('filtrosMenciones', JSON.stringify(this.filtro))
+        this.fetchMenciones()
+      },
+    },
+    paginaActual(newPage) {
+      localStorage.setItem('paginaMenciones', String(newPage))
+    },
   },
   computed: {
-    ...mapState(useDataStore, ["menciones", "alertas"]),
+    ...mapState(useDataStore, ['menciones', 'alertas']),
     paisesDisponibles() {
-      const paises = new Set();
-      this.menciones.forEach(m => {
+      const paises = new Set()
+      this.menciones.forEach((m) => {
         if (m.fuente && m.fuente.includes(' - ')) {
-          const pais = m.fuente.split(' - ').pop().trim();
-          if (pais) paises.add(pais);
+          const pais = m.fuente.split(' - ').pop().trim()
+          if (pais) paises.add(pais)
         }
-      });
-      return Array.from(paises).sort();
+      })
+      return Array.from(paises).sort()
     },
     mencionesFiltradas() {
-      return this.menciones.filter(mencion => {
-        const fechaValida = (!this.filtro.fechaDesde || new Date(mencion.fecha) >= new Date(this.filtro.fechaDesde)) &&
-                            (!this.filtro.fechaHasta || new Date(mencion.fecha) <= new Date(this.filtro.fechaHasta + 'T23:59:59'));
-        const alertaValida = (!this.filtro.alerta || mencion.alerta_id == this.filtro.alerta);
-        const valoracionValida = (!this.filtro.valoracion || mencion.sentimiento === this.filtro.valoracion);
-        const estadoValido = (!this.filtro.estado || (this.filtro.estado === 'leida' && mencion.leida === '1') || (this.filtro.estado === 'no_leida' && mencion.leida !== '1'));
-        const paisValido = (!this.filtro.pais || (mencion.fuente && mencion.fuente.endsWith(' - ' + this.filtro.pais)));
-        return fechaValida && alertaValida && valoracionValida && estadoValido && paisValido;
-      });
+      return this.menciones
+        .filter((mencion) => {
+          const fechaValida =
+            (!this.filtro.fechaDesde ||
+              new Date(mencion.fecha) >= new Date(this.filtro.fechaDesde)) &&
+            (!this.filtro.fechaHasta ||
+              new Date(mencion.fecha) <= new Date(this.filtro.fechaHasta + 'T23:59:59'))
+          const alertaValida = !this.filtro.alerta || mencion.alerta_id == this.filtro.alerta
+          const valoracionValida =
+            !this.filtro.valoracion || mencion.sentimiento === this.filtro.valoracion
+          const estadoValido =
+            !this.filtro.estado ||
+            (this.filtro.estado === 'leida' && mencion.leida === '1') ||
+            (this.filtro.estado === 'no_leida' && mencion.leida !== '1')
+          const paisValido =
+            !this.filtro.pais ||
+            (mencion.fuente && mencion.fuente.endsWith(' - ' + this.filtro.pais))
+          return fechaValida && alertaValida && valoracionValida && estadoValido && paisValido
+        })
+        .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+    },
+    mencionesPaginadas() {
+      const start = (this.paginaActual - 1) * this.porPagina
+      return this.mencionesFiltradas.slice(start, start + this.porPagina)
+    },
+    totalPaginas() {
+      return Math.ceil(this.mencionesFiltradas.length / this.porPagina)
     },
   },
-
   methods: {
-    ...mapActions(useDataStore, ["fetchMenciones", "fetchAlertas", "marcarMencionComoLeida", "marcarMencioneComoNoLeida"]),
-    
+    ...mapActions(useDataStore, [
+      'fetchMenciones',
+      'fetchAlertas',
+      'marcarMencionComoLeida',
+      'marcarMencioneComoNoLeida',
+    ]),
+    cargarFiltrosGuardados() {
+      const f = localStorage.getItem('filtrosMenciones')
+      if (f) this.filtro = JSON.parse(f)
+      const p = localStorage.getItem('paginaMenciones')
+      if (p) this.paginaActual = parseInt(p)
+    },
     formatFecha(fecha) {
-      const date = new Date(fecha);
-      const dia = date.getDate().toString().padStart(2, "0");
-      const mes = (date.getMonth() + 1).toString().padStart(2, "0");
-      const anio = date.getFullYear();
-      const hora = date.getHours().toString().padStart(2, "0");
-      const minutos = date.getMinutes().toString().padStart(2, "0");
-      return `${dia}/${mes}/${anio} ${hora}:${minutos}`;
+      const date = new Date(fecha)
+      const dia = date.getDate().toString().padStart(2, '0')
+      const mes = (date.getMonth() + 1).toString().padStart(2, '0')
+      const anio = date.getFullYear()
+      const hora = date.getHours().toString().padStart(2, '0')
+      const minutos = date.getMinutes().toString().padStart(2, '0')
+      return `${dia}/${mes}/${anio} ${hora}:${minutos}`
     },
-
     aplicarFiltros() {
-      this.fetchMenciones();
+      this.paginaActual = 1
+      localStorage.setItem('filtrosMenciones', JSON.stringify(this.filtro))
+      localStorage.setItem('paginaMenciones', String(this.paginaActual))
+      this.fetchMenciones()
     },
-
     limpiarFiltros() {
       this.filtro = {
         fechaDesde: '',
@@ -66,49 +113,48 @@ export default {
         valoracion: '',
         estado: '',
         pais: '',
-      };
-      this.aplicarFiltros();
+      }
+      localStorage.removeItem('filtrosMenciones')
+      localStorage.removeItem('paginaMenciones')
+      this.aplicarFiltros()
     },
-
     exportarExcel() {
-      const timestamp = new Date().toISOString().replace(/[-:.]/g, "").slice(0, 15);
-      let csvContent = "data:text/csv;charset=utf-8,";
-      csvContent += `"Título","Descripción","Temáticas","Fecha","Fuente","Sentimiento","Revisada","Enlace"\n`;
+      const timestamp = new Date().toISOString().replace(/[-:.]/g, '').slice(0, 15)
+      let csvContent = 'data:text/csv;charset=utf-8,'
+      csvContent += `"Título","Descripción","Temáticas","Fecha","Fuente","Sentimiento","Revisada","Enlace"\n`
+      this.mencionesFiltradas.forEach((mencion) => {
+        let titulo = mencion.titulo ? mencion.titulo.replace(/"/g, '""') : ''
+        let descripcion = mencion.descripcion ? mencion.descripcion.replace(/"/g, '""') : ''
+        let tematica = mencion.tematica ? mencion.tematica.replace(/"/g, '""') : ''
+        let fecha = this.formatFecha(mencion.fecha)
+        let fuente = mencion.fuente ? mencion.fuente.replace(/"/g, '""') : ''
+        let sentimiento = mencion.sentimiento || ''
+        let leida = mencion.leida ? 'Sí' : 'No'
+        let enlace = mencion.enlace ? mencion.enlace.replace(/"/g, '""') : ''
+        csvContent += `"${titulo}","${descripcion}","${tematica}","${fecha}","${fuente}","${sentimiento}","${leida}","${enlace}"\n`
+      })
+      const encodedUri = encodeURI(csvContent)
+      const link = document.createElement('a')
+      link.setAttribute('href', encodedUri)
+      link.setAttribute('download', `menciones_${timestamp}.csv`)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    },
 
-      this.mencionesFiltradas.forEach(mencion => {
-        let titulo = mencion.titulo ? mencion.titulo.replace(/"/g, '""') : "";
-        let descripcion = mencion.descripcion ? mencion.descripcion.replace(/"/g, '""') : "";
-        let tematica = mencion.tematica ? mencion.tematica.replace(/"/g, '""') : "";
-        let fecha = this.formatFecha(mencion.fecha);
-        let fuente = mencion.fuente ? mencion.fuente.replace(/"/g, '""') : "";
-        let sentimiento = mencion.sentimiento || "";
-        let leida = mencion.leida ? "Sí" : "No";
-        let enlace = mencion.enlace ? mencion.enlace.replace(/"/g, '""') : "";
-        csvContent += `"${titulo}","${descripcion}","${tematica}","${fecha}","${fuente}","${sentimiento}","${leida}","${enlace}"\n`;
-      });
-
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `menciones_${timestamp}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    cambiarPagina(page) {
+      this.paginaActual = page
+      localStorage.setItem('paginaMenciones', String(page))
+      document.querySelector('.main-content')?.scrollTo({ top: 0, behavior: 'smooth' })
     },
   },
-
-  async mounted() {
-    await this.fetchAlertas();
-    await this.fetchMenciones();
-  },
-};
+}
 </script>
 
 <template>
   <div class="app-container">
     <main class="main-content">
       <h2>Mis Menciones</h2>
-
       <section class="filtros">
         <div>
           <label><strong>Fecha desde:</strong></label>
@@ -122,7 +168,9 @@ export default {
           <label><strong>Alerta:</strong></label>
           <select v-model="filtro.alerta">
             <option value="">Todas mis alertas</option>
-            <option v-for="alerta in alertas" :key="alerta.id" :value="alerta.id">{{ alerta.nombre }}</option>
+            <option v-for="alerta in alertas" :key="alerta.id" :value="alerta.id">
+              {{ alerta.nombre }}
+            </option>
           </select>
         </div>
         <div>
@@ -151,7 +199,7 @@ export default {
         </div>
       </section>
 
-      <div class="botones-filtros" style="display: flex; gap: 1rem;">
+      <div class="botones-filtros" style="display: flex; gap: 1rem">
         <button class="limpiarFiltro" @click="limpiarFiltros">
           <i class="bi bi-eraser"></i> <strong>Limpiar filtros</strong>
         </button>
@@ -159,9 +207,19 @@ export default {
           <i class="bi bi-file-earmark-arrow-down"></i> <strong>Exportar</strong>
         </button>
       </div>
-      <ul v-if="mencionesFiltradas.length > 0">
-        <li v-for="mencion in mencionesFiltradas" :key="mencion.id" :class="['mencion-item', { 'leida': mencion.leida === '1' }]">
-          <a :href="mencion.enlace" target="_blank" class="mencion-link" @click="marcarMencionComoLeida(mencion.id)">
+
+      <ul v-if="mencionesPaginadas.length > 0">
+        <li
+          v-for="mencion in mencionesPaginadas"
+          :key="mencion.id"
+          :class="['mencion-item', { leida: mencion.leida === '1' }]"
+        >
+          <a
+            :href="mencion.enlace"
+            target="_blank"
+            class="mencion-link"
+            @click="marcarMencionComoLeida(mencion.id)"
+          >
             <h3>{{ mencion.titulo }}</h3>
             <p><strong>Descripción:</strong> {{ mencion.descripcion }}</p>
             <p><strong>Temáticas:</strong> {{ mencion.tematica }}</p>
@@ -170,11 +228,13 @@ export default {
           </a>
           <div class="sentimiento-icon">
             <span v-if="mencion.sentimiento === 'positivo'" title="Sentimiento positivo">👍</span>
-            <span v-else-if="mencion.sentimiento === 'negativo'" title="Sentimiento negativo">👎</span>
+            <span v-else-if="mencion.sentimiento === 'negativo'" title="Sentimiento negativo"
+              >👎</span
+            >
             <span v-else title="Sentimiento neutral">😐</span>
           </div>
           <button class="mencion-btn" @click="marcarMencioneComoNoLeida(mencion.id)">
-            <i class="bi bi-envelope-open"></i> Marcar como no leída
+            <i class="bi bi-envelope-open"></i> Marcar como "No Revisada"
           </button>
           <button class="mencion-btn-cambiar" @click="$router.push('/menciones/' + mencion.id)">
             <i class="bi bi-pencil-square"></i> Editar Valoración
@@ -182,20 +242,38 @@ export default {
         </li>
       </ul>
 
+      <div class="pagination-buttons" v-if="totalPaginas > 1">
+        <button :disabled="paginaActual === 1" @click="cambiarPagina(paginaActual - 1)"><<<</button>
+        <button
+          v-for="pagina in totalPaginas"
+          :key="pagina"
+          @click="cambiarPagina(pagina)"
+          :class="{ active: pagina === paginaActual }"
+        >
+          {{ pagina }}
+        </button>
+        <button :disabled="paginaActual === totalPaginas" @click="cambiarPagina(paginaActual + 1)">
+          >>>
+        </button>
+      </div>
       <div v-else>
-        <p v-if="!menciones.length" style="text-align: center; font-size: 20px;">Cargando menciones...</p>
+        <p v-if="!menciones.length" style="text-align: center; font-size: 20px">
+          Cargando menciones...
+        </p>
       </div>
     </main>
   </div>
 </template>
 
 <style scoped>
-html, body, #app {
+html,
+body,
+#app {
   margin: 0;
   padding: 0;
 }
 
-.limpiarFiltro{
+.limpiarFiltro {
   background-color: #f44336;
   color: white;
   border: none;
@@ -203,15 +281,14 @@ html, body, #app {
   font-size: 20px;
   border-radius: 5px;
   cursor: pointer;
-
 }
 
-.limpiarFiltro:hover{
+.limpiarFiltro:hover {
   background-color: #d32f2f;
 }
 
 .exportarFiltro {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   font-size: 20px;
@@ -221,8 +298,8 @@ html, body, #app {
   box-sizing: border-box;
 }
 
-.exportarFiltro:hover{
-  background-color: #388E3C;
+.exportarFiltro:hover {
+  background-color: #388e3c;
 }
 
 .filtros {
@@ -239,7 +316,7 @@ html, body, #app {
   font-weight: bold;
 }
 
-.filtros input[type="date"],
+.filtros input[type='date'],
 .filtros select {
   padding: 0.5rem;
   border-radius: 4px;
@@ -247,7 +324,7 @@ html, body, #app {
   font-size: 1rem;
 }
 
-.filtros input[type="date"] {
+.filtros input[type='date'] {
   width: 12rem;
 }
 
@@ -255,7 +332,8 @@ html, body, #app {
   width: 15rem;
 }
 
-.mencion-btn, .mencion-btn-cambiar {
+.mencion-btn,
+.mencion-btn-cambiar {
   background-color: #007bff;
   color: white;
   border: none;
@@ -284,6 +362,8 @@ html, body, #app {
   padding: 2rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
+  height: 100%;
+  overflow-y: auto;
 }
 
 h2 {
@@ -305,7 +385,9 @@ ul {
   border-radius: 8px;
   background-color: #f9f9f9;
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .mencion-item:hover {
@@ -331,7 +413,7 @@ ul {
   background-color: #e0ffe0;
 }
 
-button{
+button {
   font-weight: 600;
 }
 
@@ -352,7 +434,7 @@ button{
     align-items: stretch;
     padding: 0.5rem 0;
   }
-  .filtros input[type="date"],
+  .filtros input[type='date'],
   .filtros select {
     width: 100%;
     min-width: 120px;
@@ -378,7 +460,6 @@ button{
   .mencion-btn-cambiar {
     font-size: 20px;
     font-weight: 600;
-
   }
 
   .exportarFiltro,
@@ -388,7 +469,7 @@ button{
     padding: 0.9rem 0.5rem;
     border-radius: 8px;
     width: 100%;
-    margin: 0.5rem 0 0;
+    margin: 0.5rem 0 0.5rem 0;
     box-sizing: border-box;
   }
 
@@ -401,7 +482,7 @@ button{
     border-radius: 8px;
     font-weight: 600;
   }
-  
+
   .exportarFiltro {
     font-size: 1.1rem;
     padding: 0.9rem 0.5rem;
@@ -418,7 +499,7 @@ button{
     border-radius: 8px;
     font-weight: 600;
   }
-  .mencion-btn-cambiar{
+  .mencion-btn-cambiar {
     margin: 0 0 1rem 0;
     margin-left: 1rem;
     font-size: 1.1rem;
@@ -463,5 +544,36 @@ button{
     margin: 0;
   }
 }
+.pagination-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
 
+.pagination-buttons button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.pagination-buttons button:hover {
+  background-color: #e0e0e0;
+}
+
+.pagination-buttons button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.pagination-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 </style>
