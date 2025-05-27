@@ -186,7 +186,7 @@ export default {
           <label><strong>Estado:</strong></label>
           <select v-model="filtro.estado">
             <option value="">Todos los estados</option>
-            <option value="no_leida">Nuevas</option>
+            <option value="no_leida">No revisadas</option>
             <option value="leida">Revisadas</option>
           </select>
         </div>
@@ -234,10 +234,10 @@ export default {
             <span v-else title="Sentimiento neutral">😐</span>
           </div>
           <button class="mencion-btn" @click="marcarMencioneComoNoLeida(mencion.id)">
-            <i class="bi bi-envelope-open"></i> Marcar como "No Revisada"
+            <i class="bi bi-envelope-open"></i> Marcar como "No revisada"
           </button>
           <button class="mencion-btn-cambiar" @click="$router.push('/menciones/' + mencion.id)">
-            <i class="bi bi-pencil-square"></i> Editar Valoración
+            <i class="bi bi-pencil-square"></i> Editar valoración
           </button>
         </li>
       </ul>
