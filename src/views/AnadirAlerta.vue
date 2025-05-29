@@ -1,74 +1,70 @@
 <script>
-import { Form, Field, ErrorMessage } from "vee-validate";
-import * as yup from "yup";
-import { mapActions } from "pinia";
-import { useDataStore } from "@/stores/store";
+import { Form, Field, ErrorMessage } from 'vee-validate'
+import * as yup from 'yup'
+import { mapActions } from 'pinia'
+import { useDataStore } from '@/stores/store'
+import AppMessages from '@/components/AppMessages.vue'
 
 export default {
-  name: "AnadirAlerta",
+  name: 'AnadirAlertaForm',
   components: {
     Form,
     Field,
     ErrorMessage,
+    AppMessages,
   },
   data() {
     return {
       form: {
-        keywords: "",
-        idioma: "",
+        keywords: '',
+        idioma: 'es',
       },
       schema: yup.object({
         keywords: yup
           .string()
-          .matches(/^[a-zA-Z0-9,\s]+$/, "No se permiten caracteres especiales")
-          .min(3, "Las keywords deben tener al menos 3 caracteres")
-          .max(100, "Las keywords no pueden exceder los 100 caracteres")
-          .required("Las keywords son obligatorias"),
-        idioma: yup.string().required("El idioma es obligatorio"),
+          .min(3, 'La palabra clave debe tener al menos 3 caracteres')
+          .max(100, 'Máximo 100 caracteres')
+          .required('Las keywords son obligatorias'),
       }),
-    };
+    }
+  },
+  setup() {
+    return {
+      ...mapActions(useDataStore, ['crearAlerta']),
+    }
   },
   methods: {
-    ...mapActions(useDataStore, ["crearAlerta"]),
     async handleSubmit(values) {
-      const resultado = await this.crearAlerta(values);
-      if (resultado) {
-        this.$router.push('/alertas');
+      try {
+        let { keywords, idioma } = values
+        idioma = idioma || 'es' 
+        const resultado = await this.crearAlerta({ keywords, idioma })
+        this.router.push("/alertas")
+        
+      } catch (error) {
+        console.error('Error al añadir alerta:', error)
       }
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="alerta-container">
-    <h2>Crear una Alerta</h2>
+    <h2>Añadir nueva Alerta</h2>
     <Form @submit="handleSubmit" :validation-schema="schema">
       <div class="form-group">
-        <label for="keywords">Keywords</label>
+        <label for="keywords"><b>Keywords</b></label>
         <Field name="keywords" type="text" v-model="form.keywords" class="form-input" />
+        <div class="ejemplo-label">Ejemplo:</div>
+        <div class="keywords-ejemplo">
+          <span class="ejemplos">casa</span>
+          <span class="ejemplos">papa de roma</span>
+          <span class="ejemplos">elecciones</span>
+        </div>
         <ErrorMessage name="keywords" class="form-error" />
       </div>
-      <div class="form-group">
-        <label for="idioma">Idioma</label>
-        <Field as="select" name="idioma" v-model="form.idioma" class="form-input">
-          <option value="" disabled>Selecciona un idioma</option>
-          <option value="es">Español</option>
-          <option value="vc">Valencià</option>
-          <option value="en">Inglés</option>
-          <option value="fr">Francés</option>
-          <option value="de">Alemán</option>
-          <option value="it">Italiano</option>
-          <option value="pt">Portugués</option>
-          <option value="zh">Chino</option>
-          <option value="ja">Japonés</option>
-          <option value="ru">Ruso</option>
-        </Field>
-        <ErrorMessage name="idioma" class="form-error" />
-      </div>
-      <button type="submit" class="btn-submit">
-        <i class="bi bi-send"></i> Enviar Alerta
-      </button>
+      <button type="submit" class="btn-submit"><i class="bi bi-send"></i> Crear Alerta</button>
     </Form>
   </div>
 </template>
@@ -77,10 +73,10 @@ export default {
 .alerta-container {
   display: flex;
   flex-direction: column;
-  justify-content: center; 
+  justify-content: center;
   align-items: center;
-  height: 90vh; 
-  width: 80vw; 
+  height: 90vh;
+  width: 80vw;
   background-color: #ffffff;
   box-sizing: border-box;
   margin: 0 auto;
@@ -96,7 +92,7 @@ export default {
 .form-group {
   margin-bottom: 1.5rem;
   width: 100%;
-  max-width: 600px; 
+  max-width: 600px;
 }
 
 .form-input {
@@ -137,5 +133,30 @@ export default {
 
 .btn-submit:hover {
   background-color: #0056b3;
+}
+
+.keywords-ejemplo {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.ejemplos {
+  display: inline-block;
+  background: #e3e8f0;
+  color: #333;
+  border-radius: 12px;
+  padding: 0.2em 0.8em;
+  font-size: 1rem;
+  margin-right: 0.5em;
+  margin-bottom: 0.2em;
+  border: 1px solid #bfc9d9;
+}
+
+.ejemplo-label {
+  font-size: 1rem;
+  color: #666;
+  margin-top: 0.5rem;
+  margin-bottom: 0.2rem;
+  font-style: italic;
 }
 </style>

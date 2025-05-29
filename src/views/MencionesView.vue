@@ -76,6 +76,22 @@ export default {
     totalPaginas() {
       return Math.ceil(this.mencionesFiltradas.length / this.porPagina)
     },
+    paginasVisibles() {
+      const total = this.totalPaginas
+      const actual = this.paginaActual
+      const max = 5
+      let start = Math.max(1, actual - Math.floor(max / 2))
+      let end = start + max - 1
+      if (end > total) {
+        end = total
+        start = Math.max(1, end - max + 1)
+      }
+      const paginas = []
+      for (let i = start; i <= end; i++) {
+        paginas.push(i)
+      }
+      return paginas
+    },
   },
   methods: {
     ...mapActions(useDataStore, [
@@ -192,7 +208,7 @@ export default {
         </div>
         <div>
           <label><strong>País:</strong></label>
-          <select v-model="filtro.pais">
+          <select v-model="filtro.pais" @change="paginaActual = 1">
             <option value="">Todos los países</option>
             <option v-for="pais in paisesDisponibles" :key="pais" :value="pais">{{ pais }}</option>
           </select>
@@ -243,9 +259,9 @@ export default {
       </ul>
 
       <div class="pagination-buttons" v-if="totalPaginas > 1">
-        <button :disabled="paginaActual === 1" @click="cambiarPagina(paginaActual - 1)"><<<</button>
+        <button :disabled="paginaActual === 1" @click="cambiarPagina(paginaActual - 1)">&lt;&lt;&lt;</button>
         <button
-          v-for="pagina in totalPaginas"
+          v-for="pagina in paginasVisibles"
           :key="pagina"
           @click="cambiarPagina(pagina)"
           :class="{ active: pagina === paginaActual }"
@@ -253,7 +269,7 @@ export default {
           {{ pagina }}
         </button>
         <button :disabled="paginaActual === totalPaginas" @click="cambiarPagina(paginaActual + 1)">
-          >>>
+          &gt;&gt;&gt;
         </button>
       </div>
       <div v-else>

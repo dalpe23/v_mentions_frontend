@@ -110,9 +110,6 @@ export default {
         <button class="btn-ver" @click="$router.push('/clientes')">
           <i class="bi bi-people"></i> Gestionar Clientes
         </button>
-        <button class="btn-register" @click="$router.push('/anadir-alerta-form')">
-          <i class="bi bi-plus-circle"></i> Añadir Alerta
-        </button>
       </div>
       <button class="btn-logout" @click="logout">
         <i class="bi bi-box-arrow-right"></i> Cerrar Sesión

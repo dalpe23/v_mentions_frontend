@@ -8,7 +8,6 @@ import UsuarioView from '@/views/UsuarioView.vue'
 import AnadirCliente from '@/views/AnadirCliente.vue'
 import ClientesView from '@/views/ClientesView.vue'
 import CambiarSentimiento from '@/views/CambiarSentimiento.vue'
-import AnadirAlertaForm from '@/views/AnadirAlertaForm.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -65,11 +64,6 @@ const router = createRouter({
       component: CambiarSentimiento,
       props: true,
     },
-    {
-      path: '/anadir-alerta-form',
-      name: 'anadir-alerta',
-      component: AnadirAlertaForm,
-    }
   ],
 })
 // Si hay usuario en localStorage y la ruta es login, redirigir a welcome
