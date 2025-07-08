@@ -98,7 +98,7 @@ export default {
       'fetchMenciones',
       'fetchAlertas',
       'marcarMencionComoLeida',
-      'marcarMencioneComoNoLeida',
+      'marcarMencionComoNoLeida',
     ]),
     cargarFiltrosGuardados() {
       const f = localStorage.getItem('filtrosMenciones')
@@ -136,20 +136,19 @@ export default {
     },
     exportarExcel() {
       const timestamp = new Date().toISOString().replace(/[-:.]/g, '').slice(0, 15)
-      let csvContent = 'data:text/csv;charset=utf-8,'
-      csvContent += `"Título","Descripción","Temáticas","Fecha","Fuente","Sentimiento","Revisada","Enlace"\n`
+      let csvContent = 'Título|Descripción|Temáticas|Fecha|Fuente|Sentimiento|Revisada|Enlace\r\n'
       this.mencionesFiltradas.forEach((mencion) => {
-        let titulo = mencion.titulo ? mencion.titulo.replace(/"/g, '""') : ''
-        let descripcion = mencion.descripcion ? mencion.descripcion.replace(/"/g, '""') : ''
-        let tematica = mencion.tematica ? mencion.tematica.replace(/"/g, '""') : ''
+        let titulo = mencion.titulo ? mencion.titulo.replace(/\|/g, ' ') : ''
+        let descripcion = mencion.descripcion ? mencion.descripcion.replace(/\|/g, ' ') : ''
+        let tematica = mencion.tematica ? mencion.tematica.replace(/\|/g, ' ') : ''
         let fecha = this.formatFecha(mencion.fecha)
-        let fuente = mencion.fuente ? mencion.fuente.replace(/"/g, '""') : ''
+        let fuente = mencion.fuente ? mencion.fuente.replace(/\|/g, ' ') : ''
         let sentimiento = mencion.sentimiento || ''
         let leida = mencion.leida ? 'Sí' : 'No'
-        let enlace = mencion.enlace ? mencion.enlace.replace(/"/g, '""') : ''
-        csvContent += `"${titulo}","${descripcion}","${tematica}","${fecha}","${fuente}","${sentimiento}","${leida}","${enlace}"\n`
+        let enlace = mencion.enlace ? mencion.enlace.replace(/\|/g, ' ') : ''
+        csvContent += `${titulo}|${descripcion}|${tematica}|${fecha}|${fuente}|${sentimiento}|${leida}|${enlace}\r\n`
       })
-      const encodedUri = encodeURI(csvContent)
+      const encodedUri = encodeURI('data:text/csv;charset=utf-8,' + csvContent)
       const link = document.createElement('a')
       link.setAttribute('href', encodedUri)
       link.setAttribute('download', `menciones_${timestamp}.csv`)
@@ -249,8 +248,11 @@ export default {
             >
             <span v-else title="Sentimiento neutral">😐</span>
           </div>
-          <button class="mencion-btn" @click="marcarMencioneComoNoLeida(mencion.id)">
-            <i class="bi bi-envelope-open"></i> Marcar como "No revisada"
+          <button v-if="mencion.leida !== '1'" class="mencion-btn" @click="marcarMencionComoLeida(mencion.id)">
+            <i class="bi bi-envelope-open"></i> Marcar como "Revisada"
+          </button>
+          <button v-else class="mencion-btn" @click="marcarMencionComoNoLeida(mencion.id)">
+            <i class="bi bi-envelope"></i> Marcar como "No revisada"
           </button>
           <button class="mencion-btn-cambiar" @click="$router.push('/menciones/' + mencion.id)">
             <i class="bi bi-pencil-square"></i> Editar valoración

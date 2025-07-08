@@ -9,7 +9,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(useDataStore, ['fetchAlertas', 'marcarAlertaComoResuelta', 'deleteAlerta']),
+    ...mapActions(useDataStore, ['fetchAlertas', 'marcarAlertaComoResuelta', 'marcarAlertaComoNoResuelta', 'deleteAlerta', 'anadirMensaje']),
     async eliminar(id) {
       if (confirm('¿Estás seguro de que quieres eliminar la alerta "' + this.getAlertaNombreById(id) + '" ?')) {
         await this.deleteAlerta(id)
@@ -21,6 +21,13 @@ export default {
       await this.marcarAlertaComoResuelta(id)
       this.anadirMensaje(
         'Alerta "' + this.getAlertaNombreById(id) + '" marcada como resuelta',
+        success,
+      )
+    },
+    async marcarNoResuelta(id) {
+      await this.marcarAlertaComoNoResuelta(id, false)
+      this.anadirMensaje(
+        'Alerta "' + this.getAlertaNombreById(id) + '" marcada como no resuelta',
         success,
       )
     },

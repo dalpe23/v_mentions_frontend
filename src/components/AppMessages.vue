@@ -1,11 +1,81 @@
+<template>
+  <transition-group name="msg-fade" tag="div" class="messages-container">
+    <div v-for="(message, index) in messages" :key="message + index" class="alert-message">
+      <span>{{ message }}</span>
+      <button type="button" class="btn-close" @click="borrarMensajes(index)">×</button>
+    </div>
+  </transition-group>
+</template>
+
+<style scoped>
+.messages-container {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.alert-message {
+  min-width: 280px;
+  max-width: 90vw;
+  background: linear-gradient(90deg, #00a0c0 60%, #00c0a0 100%);
+  color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+  padding: 1rem 2.5rem 1rem 1.2rem;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  position: relative;
+  opacity: 0.97;
+  pointer-events: auto;
+  animation: msg-pop-in 0.4s cubic-bezier(.68,-0.55,.27,1.55);
+}
+
+@keyframes msg-pop-in {
+  0% { transform: scale(0.8) translateY(-30px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 0.97; }
+}
+
+.msg-fade-enter-active, .msg-fade-leave-active {
+  transition: all 0.5s cubic-bezier(.68,-0.55,.27,1.55);
+}
+.msg-fade-enter-from, .msg-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-30px) scale(0.95);
+}
+
+.btn-close {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.3rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  pointer-events: auto;
+}
+.btn-close:hover {
+  opacity: 1;
+}
+</style>
+
 <script>
 import { useDataStore } from '../stores/store.js';
 import { mapState, mapActions } from 'pinia';
 export default {
     name: 'AppMessages',
-    components: {
-        useDataStore
-    },
     computed: {
         ...mapState(useDataStore, ['messages']),
     },
@@ -14,73 +84,15 @@ export default {
         borrarMensajes(indice) {
             return this.borrarMensaje(indice)
         }
+    },
+    watch: {
+      messages(newVal, oldVal) {
+        if (newVal.length > 0) {
+          setTimeout(() => {
+            if (this.messages.length > 0) this.borrarMensaje(0)
+          }, 3500)
+        }
+      }
     }
 }
-
 </script>
-
-<template>
-    <div v-for="(message, index) in messages" class="alert alert-danger alert-dismissible" role="alert"> {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
-            @click="borrarMensajes(index)">x</button></div>
-</template>
-
-<style>
-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #00a2ff;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 20px;
-}
-
-nav ul {
-    list-style: none;
-    display: flex;
-    gap: 70px;
-    margin: 0;
-    padding: 0;
-}
-
-nav a {
-    color: rgb(0, 0, 0);
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.5s;
-}
-
-nav a:hover {
-    color: #ffffff;
-}
-
-.alert {
-    padding: 15px;
-    margin-bottom: 10px;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    position: relative;
-    font-size: 1rem;
-}
-
-.alert-danger {
-    color: #ffffff;
-    background-color: #00a0c0;
-    border-color: #00a0c0;
-}
-
-.alert-dismissible .btn-close {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 0.75rem 1.25rem;
-    color: inherit;
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-}
-</style>

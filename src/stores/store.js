@@ -100,32 +100,32 @@ export const useDataStore = defineStore("data", {
         if (!headers) return;
 
         await axios.patch(`${SERVER}/menciones/${id}/leida`, {}, headers);
-
+        this.anadirMensaje('Mención marcada como "revisada"');
         const mencion = this.menciones.find(m => m.id === id);
         if (mencion) {
           mencion.leida = true;
         }
         await this.fetchMenciones();
       } catch (error) {
-        this.anadirMensaje("Error al marcar la mención como leída");
+        this.anadirMensaje('Error al marcar la mención como "leída"');
         console.error("Error al marcar la mención como leída:", error);
       }
     },
 
-    async marcarMencioneComoNoLeida(id) {
+    async marcarMencionComoNoLeida(id) {
       try {
         const headers = this.getAuthHeaders();
         if (!headers) return;
 
         await axios.patch(`${SERVER}/menciones/${id}/ponerComoNoLeida`, {}, headers);
         await this.fetchMenciones();
-        this.anadirMensaje("Mención marcada como no leída");
+        this.anadirMensaje('Mención marcada como "no revisada"');
         const mencion = this.menciones.find(m => m.id === id);
         if (mencion) {
           mencion.leida = false;
         }
       } catch (error) {
-        this.anadirMensaje("Error al marcar la mención como no leída");
+        this.anadirMensaje('Error al marcar la mención como "no leída"');
         console.error("Error al marcar la mención como no leída:", error);
       }
     },
@@ -150,7 +150,7 @@ export const useDataStore = defineStore("data", {
         if (!headers) return;
         const response = await axios.post(`${SERVER}/alertas`, alertaData, headers);
         await this.fetchAlertas();
-        this.anadirMensaje("Alerta enviada correctamente.");
+        this.anadirMensaje("Alerta añadida con éxito.");
         return response.data;
       } catch (error) {
         this.anadirMensaje("Error al crear la alerta.");
