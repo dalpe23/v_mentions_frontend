@@ -46,7 +46,7 @@ export default {
         } else {
           await this.crearAlerta({ keywords, idioma })
         }
-        //this.router.push("/alertas")
+        this.$router.push("/alertas")
       } catch (error) {
         console.error('Error al añadir alerta:', error)
       }

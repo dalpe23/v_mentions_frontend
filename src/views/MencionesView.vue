@@ -322,32 +322,34 @@ body,
 
 .filtros {
   display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
 }
-
+.filtros > div {
+  flex: 1 1 180px;
+  min-width: 150px;
+  max-width: 220px;
+  margin-bottom: 0.5rem;
+  box-sizing: border-box;
+}
 .filtros p {
   margin: 0;
   font-size: 1rem;
   font-weight: bold;
 }
-
 .filtros input[type='date'],
 .filtros select {
+  width: 100%;
+  min-width: 120px;
+  font-size: 1rem;
   padding: 0.5rem;
   border-radius: 4px;
   border: 1px solid #ccc;
-  font-size: 1rem;
-}
-
-.filtros input[type='date'] {
-  width: 12rem;
-}
-
-.filtros select {
-  width: 15rem;
+  box-sizing: border-box;
 }
 
 .mencion-btn,
@@ -447,10 +449,19 @@ button {
     font-size: 2rem;
   }
   .filtros {
-    flex-direction: column;
+    flex-wrap: wrap;
+    flex-direction: row;
     gap: 0.5rem;
     align-items: stretch;
     padding: 0.5rem 0;
+    justify-content: center;
+  }
+  .filtros > div {
+    flex: 1 1 180px;
+    min-width: 150px;
+    max-width: 220px;
+    margin-bottom: 0.5rem;
+    box-sizing: border-box;
   }
   .filtros input[type='date'],
   .filtros select {
@@ -459,6 +470,7 @@ button {
     font-size: 0.98rem;
     padding: 0.7rem;
     margin-bottom: 0.3rem;
+    box-sizing: border-box;
   }
   .botones-filtros {
     flex-direction: column;
