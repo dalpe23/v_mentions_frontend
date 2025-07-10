@@ -1,6 +1,7 @@
 <script>
 import { useDataStore } from '@/stores/store'
 import { mapActions, mapState } from 'pinia'
+import * as XLSX from 'xlsx'
 
 export default {
   name: 'MencionesView',
@@ -36,7 +37,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(useDataStore, ['menciones', 'alertas']),
+    ...mapState(useDataStore, ['menciones', 'alertas', 'getAlertaNombreById']),
     paisesDisponibles() {
       const paises = new Set()
       this.menciones.forEach((m) => {
@@ -134,33 +135,52 @@ export default {
       localStorage.removeItem('paginaMenciones')
       this.aplicarFiltros()
     },
-    exportarExcel() {
-      const timestamp = new Date().toISOString().replace(/[-:.]/g, '').slice(0, 15)
-      let csvContent = 'Título|Descripción|Temáticas|Fecha|Fuente|Sentimiento|Revisada|Enlace\r\n'
-      this.mencionesFiltradas.forEach((mencion) => {
-        let titulo = mencion.titulo ? mencion.titulo.replace(/\|/g, ' ') : ''
-        let descripcion = mencion.descripcion ? mencion.descripcion.replace(/\|/g, ' ') : ''
-        let tematica = mencion.tematica ? mencion.tematica.replace(/\|/g, ' ') : ''
-        let fecha = this.formatFecha(mencion.fecha)
-        let fuente = mencion.fuente ? mencion.fuente.replace(/\|/g, ' ') : ''
-        let sentimiento = mencion.sentimiento || ''
-        let leida = mencion.leida ? 'Sí' : 'No'
-        let enlace = mencion.enlace ? mencion.enlace.replace(/\|/g, ' ') : ''
-        csvContent += `${titulo}|${descripcion}|${tematica}|${fecha}|${fuente}|${sentimiento}|${leida}|${enlace}\r\n`
-      })
-      const encodedUri = encodeURI('data:text/csv;charset=utf-8,' + csvContent)
-      const link = document.createElement('a')
-      link.setAttribute('href', encodedUri)
-      link.setAttribute('download', `menciones_${timestamp}.csv`)
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-    },
-
     cambiarPagina(page) {
       this.paginaActual = page
       localStorage.setItem('paginaMenciones', String(page))
       document.querySelector('.main-content')?.scrollTo({ top: 0, behavior: 'smooth' })
+    },
+    exportarExcel() {
+      const timestamp = new Date().toISOString().replace(/[-:.]/g, '').slice(0, 15)
+
+      const datos = this.mencionesFiltradas.map((m) => [
+        m.titulo || '',
+        m.descripcion || '',
+        m.tematica || '',
+        this.formatFecha(m.fecha),
+        m.fuente || '',
+        m.sentimiento || '',
+        m.leida === '1' ? 'Sí' : 'No',
+        m.enlace || '',
+      ])
+
+      const cabeceras = [
+        'Título',
+        'Descripción',
+        'Temáticas',
+        'Fecha',
+        'Fuente',
+        'Sentimiento',
+        'Revisada',
+        'Enlace',
+      ]
+
+      const ws = XLSX.utils.aoa_to_sheet([cabeceras, ...datos])
+
+      ws['!cols'] = [
+        { wch: 80 }, // Título
+        { wch: 100 }, // Descripción
+        { wch: 40 }, // Temáticas
+        { wch: 20 }, // Fecha
+        { wch: 50 }, // Fuente
+        { wch: 15 }, // Sentimiento
+        { wch: 12 }, // Revisada
+        { wch: 50 }, // Enlace
+      ]
+
+      const wb = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(wb, ws, 'Menciones')
+      XLSX.writeFile(wb, `menciones_${timestamp}.xlsx`)
     },
   },
 }
@@ -240,6 +260,7 @@ export default {
             <p><strong>Temáticas:</strong> {{ mencion.tematica }}</p>
             <p><strong>Fecha:</strong> {{ formatFecha(mencion.fecha) }}</p>
             <p><strong>Fuente:</strong> {{ mencion.fuente }}</p>
+            <p><strong>Alerta:</strong> "{{ getAlertaNombreById(mencion.alerta_id) }}"</p>
           </a>
           <div class="sentimiento-icon">
             <span v-if="mencion.sentimiento === 'positivo'" title="Sentimiento positivo">👍</span>
@@ -248,7 +269,11 @@ export default {
             >
             <span v-else title="Sentimiento neutral">😐</span>
           </div>
-          <button v-if="mencion.leida !== '1'" class="mencion-btn" @click="marcarMencionComoLeida(mencion.id)">
+          <button
+            v-if="mencion.leida !== '1'"
+            class="mencion-btn"
+            @click="marcarMencionComoLeida(mencion.id)"
+          >
             <i class="bi bi-envelope-open"></i> Marcar como "Revisada"
           </button>
           <button v-else class="mencion-btn" @click="marcarMencionComoNoLeida(mencion.id)">
@@ -261,7 +286,9 @@ export default {
       </ul>
 
       <div class="pagination-buttons" v-if="totalPaginas > 1">
-        <button :disabled="paginaActual === 1" @click="cambiarPagina(paginaActual - 1)">&lt;&lt;&lt;</button>
+        <button :disabled="paginaActual === 1" @click="cambiarPagina(paginaActual - 1)">
+          &lt;&lt;&lt;
+        </button>
         <button
           v-for="pagina in paginasVisibles"
           :key="pagina"

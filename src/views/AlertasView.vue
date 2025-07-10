@@ -48,6 +48,7 @@ export default {
           <div v-if="alerta.nombre"></div>
           <div class="alerta-info">
             <h3>{{ alerta.nombre }}</h3>
+            <strong>Idioma: </strong>"{{ alerta.idioma }}"
             <p class="letrasAlerta" style="font-size: 15px">
               <strong>Resuelta:</strong>
                 <span :style="{ color: alerta.resuelta === '1' ? 'green' : 'red', fontWeight: 'bold' }">{{

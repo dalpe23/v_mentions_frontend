@@ -29,7 +29,7 @@ export const useDataStore = defineStore("data", {
     },
     getAlertaNombreById(state) {
       return (id) => {
-        const alerta = state.alertas.find(a => a.id === id);
+        const alerta = state.alertas.find(a => a.id == id);
         return alerta ? alerta.nombre : null;
       };
     }

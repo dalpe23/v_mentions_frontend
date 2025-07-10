@@ -124,8 +124,8 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 90vh;
-  width: 80vw;
+  height: 100%;
+  width: 100%;
   background-color: #ffffff;
   box-sizing: border-box;
   margin: 0 auto;
@@ -346,6 +346,46 @@ button {
     flex-direction: column;
     gap: 1.5rem;
     align-items: stretch;
+  }
+  .usuario-info {
+    padding: 0 1rem;
+    margin-bottom: 1rem;
+  }
+  .usuario-info h2 {
+    font-size: 1.8rem;
+  }
+  .usuario-info p {
+    font-size: 1rem;
+  }
+  .alert-email-form {
+    padding: 1.5rem 1rem 1rem 1rem;
+    margin: 1.5rem auto 1rem auto;
+  }
+  .alert-email-form h3 {
+    font-size: 1.2rem;
+  }
+  .alert-email-form input[type='email'] {
+    font-size: 1rem;
+    padding: 0.6rem 0.8rem;
+  }
+  .alert-email-form .btn-alert {
+    padding: 0.5rem 1.2rem;
+    font-size: 1rem;
+  }
+  .alert-emails-list {
+    margin-top: 1.5rem;
+  }
+  .alert-emails-list h3 {
+    font-size: 1.1rem;
+  }
+  .alert-emails-list li {
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+  }
+  .alert-emails-list button {
+    font-size: 0.9rem;
+    height: 1.8em;
+    min-width: 2.2em;
   }
 }
 
