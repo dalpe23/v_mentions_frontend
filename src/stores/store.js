@@ -158,7 +158,7 @@ export const useDataStore = defineStore("data", {
         return null;
       }
     },
-
+    
     async deleteAlerta(id) {
       try {
         const headers = this.getAuthHeaders();
@@ -299,8 +299,7 @@ export const useDataStore = defineStore("data", {
         this.anadirMensaje("Error al guardar el email");
         console.error("Error al guardar el email:", error);
       }
-    }
-    ,
+    },
 
     async addAlertEmail(email) {
       try {
