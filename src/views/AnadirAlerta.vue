@@ -16,6 +16,7 @@ export default {
   data() {
     return {
       form: {
+        titulo: '',
         keywords: '',
         idioma: '',
       },
@@ -35,6 +36,11 @@ export default {
       //  { code: 'hi', name: 'Hindi', ceid: 'IN:hi', hl: 'hi', gl: 'IN' },
       ],
       schema: yup.object({
+        titulo: yup
+          .string()
+          .min(3, 'El título debe tener al menos 3 carácteres')
+          .max(255, 'El título debe tener máximo 255 carácteres')
+          .required('El campo es obligatorio'),
         keywords: yup
           .string()
           .min(3, 'Las keywords deben tener al menos 3 carácteres')
@@ -57,22 +63,23 @@ export default {
   methods: {
     async handleSubmit(values) {
       try {
-        let { keywords, idioma } = values
-        const idiomaObj = this.idiomas.find(i => i.code === idioma)
+        // Asegurarse de que 'titulo' se extrae correctamente del formulario
+        let { titulo, keywords, idioma } = this.form; 
+        const idiomaObj = this.idiomas.find(i => i.code === idioma);
         if (keywords.includes(';')) {
-          const keywordsArray = keywords.split(';').map(k => k.trim()).filter(k => k.length > 0)
+          const keywordsArray = keywords.split(';').map(k => k.trim()).filter(k => k.length > 0);
           for (const kw of keywordsArray) {
-            await this.crearAlerta({ keywords: kw, idioma, ceid: idiomaObj?.ceid, hl: idiomaObj?.hl, gl: idiomaObj?.gl })
+            await this.crearAlerta({ titulo, keywords: kw, idioma, ceid: idiomaObj?.ceid, hl: idiomaObj?.hl, gl: idiomaObj?.gl });
           }
         } else {
-          await this.crearAlerta({ keywords, idioma, ceid: idiomaObj?.ceid, hl: idiomaObj?.hl, gl: idiomaObj?.gl })
+          await this.crearAlerta({ titulo, keywords, idioma, ceid: idiomaObj?.ceid, hl: idiomaObj?.hl, gl: idiomaObj?.gl });
         }
-        this.$router.push("/alertas")
+        this.$router.push("/alertas");
       } catch (error) {
-        console.error('Error al añadir alerta:', error)
+        console.error('Error al añadir alerta:', error);
       }
     },
-  },
+  }
 }
 </script>
 
@@ -81,6 +88,10 @@ export default {
     <h2>Añadir nueva Alerta</h2>
     <Form @submit="handleSubmit" :validation-schema="schema">
       <div class="form-group">
+        <label for="titulo"><b>Título de la Alerta</b></label>
+        <Field name="titulo" type="text" v-model="form.titulo" class="form-input" />
+        <ErrorMessage name="titulo" class="form-error" />
+        <br>
         <label for="keywords"><b>Keywords</b></label>
         <Field name="keywords" type="text" v-model="form.keywords" class="form-input" />
         <ErrorMessage name="keywords" class="form-error" />

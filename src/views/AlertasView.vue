@@ -9,32 +9,45 @@ export default {
   },
 
   methods: {
-    ...mapActions(useDataStore, ['fetchAlertas', 'marcarAlertaComoResuelta', 'marcarAlertaComoNoResuelta', 'deleteAlerta', 'anadirMensaje']),
+    ...mapActions(useDataStore, [
+      'fetchAlertas',
+      'marcarAlertaComoResuelta',
+      'marcarAlertaComoNoResuelta',
+      'cambiarEstadoAlerta',
+      'deleteAlerta',
+      'anadirMensaje',
+    ]),
     async eliminar(id) {
-      if (confirm('¿Estás seguro de que quieres eliminar la alerta "' + this.getAlertaNombreById(id) + '" ?')) {
+      if (
+        confirm(
+          '¿Estás seguro de que quieres eliminar la alerta "' +
+            this.getAlertaNombreById(id) +
+            '" ?',
+        )
+      ) {
         await this.deleteAlerta(id)
         this.anadirMensaje('Alerta eliminada correctamente')
       }
-      return;
+      return
     },
     async marcarResuelta(id) {
-      await this.marcarAlertaComoResuelta(id)
+      await this.cambiarEstadoAlerta(id, true)
       this.anadirMensaje(
         'Alerta "' + this.getAlertaNombreById(id) + '" marcada como resuelta',
-        success,
+        'success',
       )
     },
     async marcarNoResuelta(id) {
-      await this.marcarAlertaComoNoResuelta(id, false)
+      await this.cambiarEstadoAlerta(id, false)
       this.anadirMensaje(
         'Alerta "' + this.getAlertaNombreById(id) + '" marcada como no resuelta',
-        success,
+        'success',
       )
     },
   },
 
   async mounted() {
-    await this.fetchAlertas();
+    await this.fetchAlertas()
   },
 }
 </script>
@@ -47,18 +60,34 @@ export default {
         <li v-for="alerta in alertas" :key="alerta.id" class="alerta-item">
           <div v-if="alerta.nombre"></div>
           <div class="alerta-info">
-            <h3>{{ alerta.nombre }}</h3>
+            <h3>{{ alerta.titulo }}</h3>
+            <strong>Keywords: "</strong> {{ alerta.nombre }}"
+            <br />
             <strong>Idioma: </strong>"{{ alerta.idioma }}"
             <p class="letrasAlerta" style="font-size: 15px">
               <strong>Resuelta:</strong>
-                <span :style="{ color: alerta.resuelta === '1' ? 'green' : 'red', fontWeight: 'bold' }">{{
-                alerta.resuelta === '1' ? 'Sí' : 'No'
-              }}</span>
+              <span
+                :style="{ color: alerta.resuelta === '1' ? 'green' : 'red', fontWeight: 'bold' }"
+                >{{ alerta.resuelta === '1' ? 'Sí' : 'No' }}</span
+              >
             </p>
           </div>
           <div class="alerta-buttons">
-            <button :disabled="alerta.resuelta === '1'" class="btn-view" @click="marcarResuelta(alerta.id)">
+            <button
+              v-if="alerta.resuelta == '1'"
+              class="btn-view btn-unresolve"
+              @click="marcarNoResuelta(alerta.id)"
+            >
+              <i class="bi bi-x-circle"></i> Marcar como no resuelta
+            </button>
+            <button v-else class="btn-view" @click="marcarResuelta(alerta.id)">
               <i class="bi bi-check2-circle"></i> Marcar como resuelta
+            </button>
+            <button
+              class="btn-edit"
+              @click="$router.push({ name: 'ModificarAlerta', params: { id: alerta.id } })"
+            >
+              <i class="bi bi-pencil"></i> Editar Alerta
             </button>
             <button class="btn-remove" @click="eliminar(alerta.id)">
               <i class="bi bi-trash"></i> Borrar Alerta
@@ -175,6 +204,25 @@ button {
 
 .btn-view:hover {
   background-color: #0056b3;
+}
+
+.btn-unresolve {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.btn-unresolve:hover {
+  background-color: #e0a800;
+}
+
+.btn-edit {
+  background-color: #28a745;
+  color: white;
+  font-size: 20px;
+}
+
+.btn-edit:hover {
+  background-color: #218838;
 }
 
 button:disabled {

@@ -14,7 +14,9 @@ export default {
         valoracion: '',
         estado: '',
         pais: '',
+        titulo: '', // Nuevo filtro para el título de las alertas
       },
+      mencionesOcultas: JSON.parse(localStorage.getItem('mencionesOcultas')) || [],
       paginaActual: this.paginaActual || parseInt(localStorage.getItem('paginaMenciones')) || 1,
       porPagina: 5,
     }
@@ -37,7 +39,12 @@ export default {
     },
   },
   computed: {
-    ...mapState(useDataStore, ['menciones', 'alertas', 'getAlertaNombreById']),
+    ...mapState(useDataStore, [
+      'menciones',
+      'alertas',
+      'getAlertaNombreById',
+      'getMencionTituloById',
+    ]),
     paisesDisponibles() {
       const paises = new Set()
       this.menciones.forEach((m) => {
@@ -48,6 +55,11 @@ export default {
       })
       return Array.from(paises).sort()
     },
+    titulosDisponibles() {
+      return this.alertas
+        .map((alerta) => alerta.titulo)
+        .filter((titulo, index, self) => self.indexOf(titulo) === index)
+    },
     mencionesFiltradas() {
       return this.menciones
         .filter((mencion) => {
@@ -56,7 +68,9 @@ export default {
               new Date(mencion.fecha) >= new Date(this.filtro.fechaDesde)) &&
             (!this.filtro.fechaHasta ||
               new Date(mencion.fecha) <= new Date(this.filtro.fechaHasta + 'T23:59:59'))
-          const alertaValida = !this.filtro.alerta || mencion.alerta_id == this.filtro.alerta
+          const keywordsValidas = !this.filtro.alerta || mencion.alerta_id === this.filtro.alerta
+          const alertaValida =
+            !this.filtro.titulo || (mencion.titulo_alerta || '').toLowerCase() === this.filtro.titulo.toLowerCase()
           const valoracionValida =
             !this.filtro.valoracion || mencion.sentimiento === this.filtro.valoracion
           const estadoValido =
@@ -66,7 +80,16 @@ export default {
           const paisValido =
             !this.filtro.pais ||
             (mencion.fuente && mencion.fuente.endsWith(' - ' + this.filtro.pais))
-          return fechaValida && alertaValida && valoracionValida && estadoValido && paisValido
+          const noOculta = !this.mencionesOcultas.includes(mencion.id)
+          return (
+            fechaValida &&
+            keywordsValidas &&
+            alertaValida &&
+            valoracionValida &&
+            estadoValido &&
+            paisValido &&
+            noOculta
+          )
         })
         .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
     },
@@ -101,6 +124,16 @@ export default {
       'marcarMencionComoLeida',
       'marcarMencionComoNoLeida',
     ]),
+    ocultarMencion(id) {
+      //if (confirm('¿Estás seguro de que quieres borrar la mención "' + this.getMencionTituloById(id) + '" ?'))
+      {
+        if (!this.mencionesOcultas.includes(id)) {
+          this.mencionesOcultas.push(id)
+          localStorage.setItem('mencionesOcultas', JSON.stringify(this.mencionesOcultas))
+          this.anadirMensaje('Mención borrada correctamente')
+        }
+      }
+    },
     cargarFiltrosGuardados() {
       const f = localStorage.getItem('filtrosMenciones')
       if (f) this.filtro = JSON.parse(f)
@@ -130,6 +163,7 @@ export default {
         valoracion: '',
         estado: '',
         pais: '',
+        titulo: '', // Reiniciar filtro de título
       }
       localStorage.removeItem('filtrosMenciones')
       localStorage.removeItem('paginaMenciones')
@@ -143,16 +177,20 @@ export default {
     exportarExcel() {
       const timestamp = new Date().toISOString().replace(/[-:.]/g, '').slice(0, 15)
 
-      const datos = this.mencionesFiltradas.map((m) => [
-        m.titulo || '',
-        m.descripcion || '',
-        m.tematica || '',
-        this.formatFecha(m.fecha),
-        m.fuente || '',
-        m.sentimiento || '',
-        m.leida === '1' ? 'Sí' : 'No',
-        m.enlace || '',
-      ])
+      const datos = this.mencionesFiltradas.map((m) => {
+        const [fuente, pais] = m.fuente?.split(' - ').map((s) => s.trim()) || [m.fuente || '', '']
+        return [
+          m.titulo || '',
+          m.descripcion || '',
+          m.tematica || '',
+          this.formatFecha(m.fecha),
+          fuente,
+          pais,
+          m.sentimiento || '',
+          m.leida === '1' ? 'Sí' : 'No',
+          m.enlace || '',
+        ]
+      })
 
       const cabeceras = [
         'Título',
@@ -160,6 +198,7 @@ export default {
         'Temáticas',
         'Fecha',
         'Fuente',
+        'País',
         'Sentimiento',
         'Revisada',
         'Enlace',
@@ -173,6 +212,7 @@ export default {
         { wch: 40 }, // Temáticas
         { wch: 20 }, // Fecha
         { wch: 50 }, // Fuente
+        { wch: 30 }, // País
         { wch: 15 }, // Sentimiento
         { wch: 12 }, // Revisada
         { wch: 50 }, // Enlace
@@ -201,13 +241,23 @@ export default {
         </div>
         <div>
           <label><strong>Alerta:</strong></label>
-          <select v-model="filtro.alerta">
+          <select v-model="filtro.titulo">
             <option value="">Todas mis alertas</option>
+            <option v-for="titulo in titulosDisponibles" :key="titulo" :value="titulo">
+              {{ titulo }}
+            </option>
+          </select>
+        </div>
+        <!--
+        <div>
+          <label><strong>Keywords:</strong></label>
+          <select v-model="filtro.alerta">
+            <option value="">Todas mis keywords</option>
             <option v-for="alerta in alertas" :key="alerta.id" :value="alerta.id">
               {{ alerta.nombre }}
             </option>
           </select>
-        </div>
+        </div> -->
         <div>
           <label><strong>Valoración:</strong></label>
           <select v-model="filtro.valoracion">
@@ -249,6 +299,13 @@ export default {
           :key="mencion.id"
           :class="['mencion-item', { leida: mencion.leida === '1' }]"
         >
+          <button
+            class="mencion-btn-borrar"
+            @click="ocultarMencion(mencion.id)"
+            title="Ocultar mención"
+          >
+            ✖
+          </button>
           <a
             :href="mencion.enlace"
             target="_blank"
@@ -462,6 +519,23 @@ ul {
 
 button {
   font-weight: 600;
+}
+
+.mencion-btn-borrar {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  font-size: 16px;
+  border-radius: 20%;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.mencion-btn-borrar:hover {
+  background-color: #d32f2f;
 }
 
 @media (max-width: 1024px) {

@@ -20,7 +20,7 @@
       this.cargarMencion();
     },
     methods: {
-      ...mapActions(useDataStore, ["fetchMencion", "cambiarSentimiento"]),
+      ...mapActions(useDataStore, ["fetchMencion", "cambiarSentimiento", "marcarMencionComoLeida"]),
   
       async cargarMencion() {
         try {
@@ -37,6 +37,7 @@
       async guardarSentimiento() {
         try {
           await this.cambiarSentimiento(this.id, this.sentimientoSeleccionado);
+          await this.marcarMencionComoLeida(this.id);
           this.$router.push("/menciones");
         } catch (error) {
           console.error("Error al guardar el sentimiento:", error);

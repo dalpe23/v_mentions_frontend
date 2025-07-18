@@ -32,6 +32,12 @@ export const useDataStore = defineStore("data", {
         const alerta = state.alertas.find(a => a.id == id);
         return alerta ? alerta.nombre : null;
       };
+    },
+    getMencionTituloById(state) {
+      return (id) => {
+        const mencion = state.menciones.find(m => m.id == id);
+        return mencion ? mencion.titulo : null;
+      };
     }
     ,
   },
@@ -144,6 +150,32 @@ export const useDataStore = defineStore("data", {
       }
     },
 
+    async fetchAlerta(id) {
+      try {
+        const headers = this.getAuthHeaders();
+        if (!headers) return;
+
+        const response = await axios.get(`${SERVER}/alertas/${id}`, headers);
+        return response.data;
+      } catch (error) {
+        this.anadirMensaje("Error al cargar la alerta");
+        console.error("Error al cargar la alerta:", error);
+      }
+    },
+
+    async actualizarAlerta(id, alertaData) {
+      try {
+        const headers = this.getAuthHeaders();
+        if (!headers) return;
+
+        await axios.put(`${SERVER}/alertas/${id}`, alertaData, headers);
+        this.anadirMensaje("Alerta actualizada con éxito.");
+      } catch (error) {
+        this.anadirMensaje("Error al actualizar la alerta.");
+        console.error("Error al actualizar la alerta:", error);
+      }
+    },
+
     async crearAlerta(alertaData) {
       try {
         const headers = this.getAuthHeaders();
@@ -174,21 +206,21 @@ export const useDataStore = defineStore("data", {
       }
     },
 
-    async marcarAlertaComoResuelta(id) {
+    async cambiarEstadoAlerta(id, estado) {
       try {
         const headers = this.getAuthHeaders();
         if (!headers) return;
 
-        await axios.patch(`${SERVER}/alertas/${id}`, { resuelta: true }, headers);
+        await axios.patch(`${SERVER}/alertas/${id}/estado`, { resuelta: estado }, headers);
 
         const alerta = this.alertas.find(a => a.id === id);
         if (alerta) {
-          alerta.resuelta = true;
+          alerta.resuelta = estado;
         }
         await this.fetchAlertas();
       } catch (error) {
-        this.anadirMensaje("Error al marcar la alerta como resuelta");
-        console.error("Error al marcar la alerta como resuelta:", error);
+        this.anadirMensaje("Error al cambiar el estado de la alerta");
+        console.error("Error al cambiar el estado de la alerta:", error);
       }
     },
 
